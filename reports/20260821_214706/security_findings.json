@@ -1,0 +1,16 @@
+{
+    "score": 85,
+    "timestamp": "20260821_214706",
+    "findings": [
+        {
+            "service": "IAM",
+            "severity": "CRITICAL",
+            "resource": "arn:aws:iam::user/aws-security-analyzer",
+            "issue": "O usuário IAM 'aws-security-analyzer' não possui dispositivo MFA (Autenticação Multifator) ativado.",
+            "impact": "Contas sem MFA são extremamente vulneráveis a ataques de força bruta e roubo de credenciais.",
+            "recommendation": "Habilite imediatamente o MFA para este usuário no Console AWS.",
+            "compliance": "CIS AWS Benchmark 1.2",
+            "region": "us-east-1"
+        }
+    ]
+}
