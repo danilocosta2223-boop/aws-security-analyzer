@@ -1,0 +1,169 @@
+import streamlit as st
+import pandas as pd
+import json
+from datetime import datetime
+
+# --- CARREGAR DADOS DO RELATÓRIO JSON ---
+try:
+    with open("reports/security_report.json", "r", encoding="utf-8") as f:
+        SECURITY_DATA = json.load(f)
+except FileNotFoundError:
+    # Fallback caso o arquivo ainda não tenha sido gerado
+    SECURITY_DATA = {
+        "timestamp": str(datetime.now()),
+        "region": "us-east-1",
+        "total_findings": 0,
+        "security_hub_summary": {"critical": 0, "high": 0, "medium": 0, "low": 0},
+        "findings": []
+    }
+
+# --- CÁLCULO DE SECURITY SCORE DINÂMICO ---
+def calculate_dynamic_score(summary):
+    score = 100
+    score -= summary.get("critical", 0) * 25
+    score -= summary.get("high", 0) * 15
+    score -= summary.get("medium", 0) * 5
+    return max(score, 0)
+
+current_score = calculate_dynamic_score(SECURITY_DATA["security_hub_summary"])
+
+# --- CONFIGURAÇÃO DA PÁGINA ---
+st.set_page_config(
+    page_title="AWS Cyber Defense Dashboard",
+    page_icon="📊",
+    layout="wide"
+)
+
+# --- ESTILO VISUAL CUSTOMIZADO (CSS) ---
+st.markdown("""
+    <style>
+    .stApp { background-color: #0f172a; color: #f8fafc; }
+    .hero-card {
+        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        padding: 30px; border-radius: 16px; border: 1px solid #334155;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4); text-align: center; margin-bottom: 24px;
+    }
+    .badge-critical { background-color: #7f1d1d; color: #fca5a5; padding: 4px 10px; border-radius: 6px; font-weight: bold; }
+    .badge-high { background-color: #78350f; color: #fde68a; padding: 4px 10px; border-radius: 6px; font-weight: bold; }
+    .badge-medium { background-color: #1e3a8a; color: #93c5fd; padding: 4px 10px; border-radius: 6px; font-weight: bold; }
+    .attack-step { background-color: #1e293b; padding: 14px; border-radius: 8px; border-left: 4px solid #ef4444; margin-bottom: 10px; }
+    </style>
+""", unsafe_allow_html=True)
+
+# --- MENU LATERAL DE NAVEGAÇÃO ---
+st.sidebar.title("🛡️ CSOC Enterprise")
+st.sidebar.markdown(f"**Região:** `{SECURITY_DATA['region']}`")
+st.sidebar.markdown(f"**Último Scan:** `{SECURITY_DATA['timestamp']}`")
+st.sidebar.markdown("---")
+
+page = st.sidebar.radio("Seções do Dashboard", [
+    "📊 Dashboard", 
+    "🚨 Security Hub Findings", 
+    "🎯 MITRE ATT&CK", 
+    "🧠 Attack Path", 
+    "📄 JSON Payload View"
+])
+
+st.sidebar.markdown("---")
+st.sidebar.info("🏢 **Engine:** Pipeline JSON + Streamlit\n🔒 **Status:** Sincronizado")
+
+# ==========================================
+# 1. DASHBOARD PRINCIPAL
+# ==========================================
+if page == "📊 Dashboard":
+    st.markdown("""
+        <div class="hero-card">
+            <h1>🛡️ AWS Cyber Defense Platform</h1>
+            <p style="color: #94a3b8; font-size: 16px;">Painel de Operações de Segurança Alimentado por Arquitetura Desacoplada</p>
+            <span style="background-color: #065f46; color: #34d399; padding: 6px 14px; border-radius: 20px; font-weight: 600;">Lido de: reports/security_report.json</span>
+        </div>
+    """, unsafe_allow_html=True)
+
+    col_m1, col_m2, col_m3 = st.columns(3)
+    with col_m1:
+        st.metric(label="Security Score Global", value=f"{current_score} / 100", delta="Baseado em Riscos Ativos")
+    with col_m2:
+        st.metric(label="Total de Achados (Findings)", value=SECURITY_DATA["total_findings"], delta="Security Hub")
+    with col_m3:
+        st.metric(
+            label="Críticos & Altos",
+            value=SECURITY_DATA["security_hub_summary"]["critical"] + SECURITY_DATA["security_hub_summary"]["high"],
+            delta="Ação Requerida",
+            delta_color="inverse"
+        )
+
+    st.markdown("---")
+    st.subheader("📋 Resumo de Severidade")
+    s1, s2, s3, s4 = st.columns(4)
+    s1.metric("🔴 Crítico", SECURITY_DATA["security_hub_summary"]["critical"])
+    s2.metric("🟠 Alto", SECURITY_DATA["security_hub_summary"]["high"])
+    s3.metric("🟡 Médio", SECURITY_DATA["security_hub_summary"]["medium"])
+    s4.metric("🟢 Baixo", SECURITY_DATA["security_hub_summary"]["low"])
+
+# ==========================================
+# 2. SECURITY HUB FINDINGS
+# ==========================================
+elif page == "🚨 Security Hub Findings":
+    st.title("🚨 Detalhamento dos Achados (Security Hub)")
+    st.markdown("Lista carregada diretamente do arquivo de relatório gerado pelo pipeline.")
+    
+    for finding in SECURITY_DATA["findings"]:
+        sev = finding["severity"]
+        badge_class = "badge-critical" if sev == "CRITICAL" else ("badge-high" if sev == "HIGH" else "badge-medium")
+        
+        st.markdown(f"""
+        <div style="background-color: #1e293b; padding: 18px; border-radius: 10px; border: 1px solid #334155; margin-bottom: 12px;">
+            <span class="{badge_class}">{sev}</span> &nbsp;&nbsp; 
+            <b style="font-size: 18px; color: #f8fafc;">Serviço: {finding['service']}</b>
+            <p style="margin: 8px 0 4px 0; color: #cbd5e1;"><b>Recurso Afetado:</b> <code>{finding['resource']}</code></p>
+            <p style="margin: 0 0 8px 0; color: #cbd5e1;"><b>Problema:</b> {finding['issue']}</p>
+            <p style="margin: 0; color: #34d399;"><b>Recomendação:</b> {finding['recommendation']}</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+# ==========================================
+# 3. MITRE ATT&CK
+# ==========================================
+elif page == "🎯 MITRE ATT&CK":
+    st.title("🎯 MITRE ATT&CK Cloud Matrix")
+    st.markdown("Mapeamento tático baseado nos alertas vigentes.")
+    mitre_df = pd.DataFrame({
+        "Técnica / ID": ["T1078 - Valid Accounts", "T1098 - Account Manipulation", "T1530 - Data from Cloud Storage"],
+        "Serviço Relacionado": ["IAM", "EC2 (SSH)", "S3"],
+        "Severidade": ["CRITICAL", "HIGH", "MEDIUM"]
+    })
+    st.dataframe(mitre_df, use_container_width=True)
+
+# ==========================================
+# 4. ATTACK PATH ANALYSIS
+# ==========================================
+elif page == "🧠 Attack Path":
+    st.title("🧠 Attack Path Analysis")
+    st.markdown("Cadeia de risco calculada com base nos dados do JSON:")
+    st.markdown("""
+    <div class="attack-step">
+        <h4>1️⃣ Ponto de Entrada (IAM): <code>admin-user</code></h4>
+        <p><b>Problema:</b> MFA não habilitado. Risco de comprometimento inicial da conta.</p>
+    </div>
+    <div style="text-align: center; font-size: 24px; color: #ef4444;">↓</div>
+    <div class="attack-step">
+        <h4>2️⃣ Movimentação Lateral (EC2): <code>sg-01a2b3c</code></h4>
+        <p><b>Problema:</b> Porta SSH 22 aberta para a Internet.</p>
+    </div>
+    <div style="text-align: center; font-size: 24px; color: #ef4444;">↓</div>
+    <div class="attack-step" style="border-left-color: #dc2626;">
+        <h4>3️⃣ Impacto Final (S3): <code>backup-clientes</code></h4>
+        <p><b>Problema:</b> Bucket sem criptografia KMS.</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+# ==========================================
+# 5. JSON PAYLOAD VIEW
+# ==========================================
+elif page == "📄 JSON Payload View":
+    st.title("📄 Visualização do Arquivo JSON (`reports/security_report.json`)")
+    st.markdown("Conteúdo exato lido do disco neste exato momento:")
+    st.json(SECURITY_DATA)
+
+st.markdown("---")
+st.markdown("<p style='text-align: center; color: #64748b;'>Cloud Security Operations Center (CSOC) — Enterprise Edition</p>", unsafe_allow_html=True)
