@@ -1,0 +1,62 @@
+/* ==========================================================================
+   AWS Cyber Defense Platform - Corporate Theme (Prisma/Fleury Style)
+   ========================================================================== */
+
+/* Fundo Geral */
+.stApp {
+    background-color: #f5f5f5;
+    color: #222222;
+}
+
+/* Área principal */
+.main {
+    background-color: #f5f5f5;
+}
+
+/* Remoção de elementos padrão do Streamlit para visual de sistema corporativo */
+[data-testid="stHeader"] {
+    display: none !important;
+}
+
+#MainMenu {
+    visibility: hidden !important;
+}
+
+footer {
+    visibility: hidden !important;
+}
+
+/* Menu Lateral (Sidebar) */
+section[data-testid="stSidebar"] {
+    background-color: #303030 !important;
+}
+
+/* Textos e Links da Sidebar */
+section[data-testid="stSidebar"] * {
+    color: #ffffff !important;
+}
+
+section[data-testid="stSidebar"] a {
+    color: #ffffff !important;
+    font-weight: 500;
+}
+
+section[data-testid="stSidebar"] a:hover {
+    color: #4da3ff !important;
+}
+
+/* Títulos Corporativos */
+h1, h2, h3 {
+    color: #202020 !important;
+    font-weight: 600 !important;
+}
+
+/* Transparência e remoção de fundos em blocos internos */
+[data-testid="stVerticalBlock"] {
+    background-color: transparent !important;
+}
+
+/* Linha horizontal */
+hr {
+    border-color: #d1d5db !important;
+}
