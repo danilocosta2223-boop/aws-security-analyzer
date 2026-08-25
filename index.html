@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS Cyber Defense Platform | Danilo Rafael da Silva Costa</title>
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --secondary: #2563eb;
+            --bg-color: #f3f4f6;
+            --card-bg: #ffffff;
+            --text-color: #1e3a5f;
+            --text-muted: #4b5563;
+            --border-color: #d1d5db;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: var(--primary);
+            font-size: 32px;
+            margin-bottom: 6px;
+            text-align: center;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 16px;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+            font-weight: 600;
+        }
+
+        .author-box {
+            background-color: #f8fafc;
+            border-left: 4px solid var(--secondary);
+            padding: 16px;
+            border-radius: 4px;
+            margin-bottom: 24px;
+        }
+
+        .author-box h3 {
+            margin: 0 0 6px 0;
+            color: var(--primary);
+            font-size: 18px;
+        }
+
+        .author-box p {
+            margin: 0;
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* Métricas Visuais */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-card h2 {
+            margin: 0 0 4px 0;
+            color: var(--primary);
+            font-size: 24px;
+        }
+
+        .stat-card p {
+            margin: 0;
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .section-title {
+            font-size: 18px;
+            color: var(--primary);
+            margin-top: 30px;
+            margin-bottom: 12px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 6px;
+        }
+
+        .description {
+            font-size: 15px;
+            line-height: 1.6;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+            text-align: justify;
+        }
+
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .module-item {
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 10px 14px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        /* Tecnologias Badges */
+        .tech-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+
+        .tech-badge {
+            background: #e0f2fe;
+            color: #0369a1;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        /* Arquitetura */
+        .architecture-box {
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+        }
+
+        /* Área de Screenshots */
+        .screenshot-container {
+            text-align: center;
+            background: #f8fafc;
+            border: 2px dashed var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .screenshot-container img {
+            max-width: 100%;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            margin-top: 10px;
+        }
+
+        .buttons-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: var(--primary);
+            color: white;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 14px;
+            transition: background 0.2s;
+            text-align: center;
+        }
+
+        .btn:hover {
+            background: var(--secondary);
+        }
+
+        .btn-outline {
+            display: inline-block;
+            padding: 12px 24px;
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 14px;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .btn-outline:hover {
+            background: #f1f5f9;
+        }
+
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border-color);
+            padding-top: 20px;
+        }
+
+        .footer a {
+            color: var(--secondary);
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>AWS Cyber Defense Platform</h1>
+        <div class="subtitle">Cloud Security Operations Center (CSOC Enterprise)</div>
+
+        <div class="author-box">
+            <h3>Danilo Rafael da Silva Costa</h3>
+            <p>Estudante de Defesa Cibernética na FIAP | MBA em Gestão de Projetos | Administração | Strategic Leadership (BYU)</p>
+        </div>
+
+        <!-- Métricas Visuais -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h2>10+</h2>
+                <p>Módulos de Segurança</p>
+            </div>
+            <div class="stat-card">
+                <h2>AWS</h2>
+                <p>Cloud Security & Governança</p>
+            </div>
+            <div class="stat-card">
+                <h2>CSOC</h2>
+                <p>Monitoramento & SOC</p>
+            </div>
+        </div>
+
+        <div class="section-title">Sobre a Solução</div>
+        <div class="description">
+            Plataforma corporativa de Cloud Security desenvolvida para monitoramento contínuo, governança, análise de vulnerabilidades, compliance e simulação de ameaças em ambientes AWS. A solução integra um painel interativo em Streamlit com um back-end corporativo em Node.js.
+        </div>
+
+        <div class="section-title">Módulos Monitorados</div>
+        <div class="modules-grid">
+            <div class="module-item">✓ IAM & S3 Security</div>
+            <div class="module-item">✓ EC2 Hardening & Security Groups</div>
+            <div class="module-item">✓ AWS Config & Compliance</div>
+            <div class="module-item">✓ Lambda & RDS Security</div>
+            <div class="module-item">✓ GuardDuty Threat Intelligence</div>
+            <div class="module-item">✓ Attack Path Analysis</div>
+        </div>
+
+        <div class="section-title">Tecnologias Utilizadas</div>
+        <div class="tech-badges">
+            <span class="tech-badge">Python</span>
+            <span class="tech-badge">Node.js / Express</span>
+            <span class="tech-badge">AWS Cloud</span>
+            <span class="tech-badge">Streamlit</span>
+            <span class="tech-badge">GitHub</span>
+            <span class="tech-badge">Security Hub</span>
+            <span class="tech-badge">GuardDuty</span>
+            <span class="tech-badge">IAM & EC2</span>
+            <span class="tech-badge">S3 & RDS</span>
+            <span class="tech-badge">Lambda & KMS</span>
+        </div>
+
+        <div class="section-title">Arquitetura da Solução</div>
+        <div class="architecture-box">
+            <b>Frontend:</b> Streamlit (Python) <br>
+            <b>Backend:</b> Node.js / Express (API REST) <br>
+            <b>Infraestrutura & Segurança:</b> AWS Cloud Services <br>
+            <b>Versionamento:</b> Git / GitHub <br>
+            <b>Deploy:</b> Streamlit Cloud + Render
+        </div>
+
+        <div class="section-title">Demonstração Visual da Plataforma</div>
+        <div class="screenshot-container">
+            <p style="margin: 0; font-size: 13px; color: var(--text-muted);">Visualização do Dashboard de Monitoramento (Adicione um print em <code>assets/dashboard.png</code>)</p>
+            <!-- Substitua ou insira a tag img quando tiver a imagem -->
+            <!-- <img src="assets/dashboard.png" alt="Dashboard da Plataforma"> -->
+        </div>
+
+        <div class="buttons-container">
+            <a class="btn" href="https://aws-security-analyzer.streamlit.app" target="_blank">Acessar Plataforma Online</a>
+            <a class="btn-outline" href="https://github.com/danilocosta2223-boop/aws-security-analyzer" target="_blank">Ver Código Fonte</a>
+            <a class="btn-outline" href="https://www.linkedin.com/in/danilocosta2223" target="_blank">LinkedIn</a>
+            <a class="btn-outline" href="curriculo.pdf" target="_blank">Baixar Currículo</a>
+        </div>
+
+        <div class="footer">
+            AWS Cyber Defense Platform • Desenvolvido por <a href="https://www.linkedin.com/in/danilocosta2223" target="_blank">Danilo Rafael da Silva Costa</a>
+        </div>
+    </div>
+
+</body>
+</html>
