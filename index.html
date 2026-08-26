@@ -44,40 +44,43 @@
             object-fit: cover;
         }
 
+        .header-profile {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            background-color: #f8fafc;
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+        }
+
+        .profile-pic {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--secondary);
+        }
+
         h1 {
             color: var(--primary);
-            font-size: 32px;
-            margin-bottom: 6px;
-            text-align: center;
+            font-size: 28px;
+            margin: 0 0 4px 0;
         }
 
         .subtitle {
-            text-align: center;
-            font-size: 16px;
+            font-size: 15px;
             color: var(--text-muted);
-            margin-bottom: 24px;
             font-weight: 600;
+            margin-bottom: 6px;
         }
 
-        .author-box {
-            background-color: #f8fafc;
-            border-left: 4px solid var(--secondary);
-            padding: 16px;
-            border-radius: 4px;
-            margin-bottom: 24px;
-        }
-
-        .author-box h3 {
-            margin: 0 0 6px 0;
-            color: var(--primary);
-            font-size: 18px;
-        }
-
-        .author-box p {
-            margin: 0;
-            font-size: 14px;
+        .author-info {
+            font-size: 13px;
             color: var(--text-muted);
-            line-height: 1.5;
+            margin: 0;
+            line-height: 1.4;
         }
 
         .stats-grid {
@@ -246,15 +249,17 @@
 <body>
 
     <div class="container">
-        <!-- Banner Opcional (Se tiver banner.png na raiz) -->
+        <!-- Banner Principal -->
         <img src="banner.png" alt="AWS Cyber Defense Banner" class="banner-img" onerror="this.style.display='none'">
 
-        <h1>AWS Cyber Defense Platform</h1>
-        <div class="subtitle">Cloud Security Operations Center (CSOC Enterprise)</div>
-
-        <div class="author-box">
-            <h3>Danilo Rafael da Silva Costa</h3>
-            <p>Estudante de Defesa Cibernética na FIAP | MBA em Gestão de Projetos | Administração | Strategic Leadership (BYU)</p>
+        <!-- Perfil com Foto e Nome -->
+        <div class="header-profile">
+            <img src="foto_danilo.jpg" alt="Danilo Rafael" class="profile-pic" onerror="this.style.display='none'">
+            <div>
+                <h1>AWS Cyber Defense Platform</h1>
+                <div class="subtitle">Cloud Security Operations Center (CSOC Enterprise)</div>
+                <p class="author-info"><strong>Danilo Rafael da Silva Costa</strong><br>Estudante de Defesa Cibernética | FIAP</p>
+            </div>
         </div>
 
         <div class="stats-grid">
@@ -296,9 +301,6 @@
             <span class="tech-badge">GitHub</span>
             <span class="tech-badge">Security Hub</span>
             <span class="tech-badge">GuardDuty</span>
-            <span class="tech-badge">IAM & EC2</span>
-            <span class="tech-badge">S3 & RDS</span>
-            <span class="tech-badge">Lambda & KMS</span>
         </div>
 
         <div class="section-title">Arquitetura da Solução</div>
@@ -306,13 +308,11 @@
             <b>Frontend:</b> Streamlit (Python) <br>
             <b>Backend:</b> Node.js / Express (API REST) <br>
             <b>Infraestrutura & Segurança:</b> AWS Cloud Services <br>
-            <b>Versionamento:</b> Git / GitHub <br>
             <b>Deploy:</b> Streamlit Cloud + Render
         </div>
 
         <div class="section-title">Demonstração do Painel</div>
         <div class="screenshot-container">
-            <!-- Se tiver painel.png na raiz, ele aparecerá aqui -->
             <img src="painel.png" alt="Dashboard Screenshot" onerror="this.style.display='none'">
             <p style="margin: 8px 0 0 0; font-size: 13px; color: var(--text-muted);">Painel de Controle e Monitoramento de Segurança AWS</p>
         </div>
