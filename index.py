@@ -1,9 +1,6 @@
 import streamlit as st
 import requests
 from datetime import datetime
-from streamlit_autorefresh import st_autorefresh
-import ssl
-import socket
 from urllib.parse import urlparse
 
 # ==========================================
@@ -30,12 +27,7 @@ footer { visibility: hidden; }
 """, unsafe_allow_html=True)
 
 # ==========================================
-# 3. ATUALIZAÇÃO AUTOMÁTICA (15s)
-# ==========================================
-st_autorefresh(interval=15000, key="home_refresh")
-
-# ==========================================
-# 4. TEMA ESCURO PROFISSIONAL & AZUL #1D4ED8
+# 3. TEMA ESCURO PROFISSIONAL & AZUL #1D4ED8
 # ==========================================
 st.markdown("""
 <style>
@@ -72,7 +64,7 @@ section[data-testid="stSidebar"] {
 """, unsafe_allow_html=True)
 
 # ==========================================
-# 5. SIDEBAR PROFISSIONAL & MÓDULOS
+# 4. SIDEBAR PROFISSIONAL & MÓDULOS
 # ==========================================
 st.sidebar.markdown("""
 # AWS Cyber Defense
@@ -93,7 +85,7 @@ st.sidebar.write("Relatórios de Auditoria")
 st.sidebar.markdown("---")
 
 # ==========================================
-# 6. BANNER DE DESTAQUE SUPERIOR (AZUL #1D4ED8 COM ALTO CONTRASTE)
+# 5. BANNER DE DESTAQUE SUPERIOR (AZUL #1D4ED8 COM ALTO CONTRASTE)
 # ==========================================
 st.markdown("""
 <div style="
@@ -124,7 +116,7 @@ st.markdown(f"""
 st.markdown("---")
 
 # ==========================================
-# 7. CENTRAL DE ANÁLISE COM VERIFICAÇÃO REAL E HISTÓRICO
+# 6. CENTRAL DE ANÁLISE COM VERIFICAÇÃO REAL E HISTÓRICO
 # ==========================================
 st.header("Central de Análise AWS")
 
@@ -150,7 +142,7 @@ if st.button("Executar Verificação de Segurança"):
         score = 0
         detalhes = []
         
-        # Se for uma URL (começa com http ou https ou contém .)
+        # Se for uma URL (começa com http ou https)
         if recurso_alvo.startswith("http://") or recurso_alvo.startswith("https://"):
             with st.spinner(f"Analisando conectividade e segurança do alvo: {recurso_alvo}..."):
                 try:
@@ -234,7 +226,7 @@ if st.session_state.historico_analises:
 st.markdown("---")
 
 # ==========================================
-# 8. SERVIÇOS AWS MONITORADOS (LISTA EXPANDIDA)
+# 7. SERVIÇOS AWS MONITORADOS (LISTA EXPANDIDA)
 # ==========================================
 st.header("Serviços Monitorados")
 
@@ -252,7 +244,7 @@ for i, s in enumerate(servicos):
 st.markdown("---")
 
 # ==========================================
-# 9. MÓDULOS DE SEGURANÇA PROFISSIONAIS
+# 8. MÓDULOS DE SEGURANÇA PROFISSIONAIS
 # ==========================================
 st.header("Módulos de Segurança")
 
@@ -285,7 +277,7 @@ with c_mod3:
 st.markdown("---")
 
 # ==========================================
-# 10. APRESENTAÇÃO COM FOTO AMPLIADA (380px) E BIO DETALHADA
+# 9. APRESENTAÇÃO COM FOTO AMPLIADA (380px) E BIO DETALHADA
 # ==========================================
 col_foto, col_texto = st.columns([1, 2], gap="large")
 
@@ -341,7 +333,7 @@ with col_texto:
 st.markdown("---")
 
 # ==========================================
-# 11. COMPETÊNCIAS & RESUMO EXECUTIVO DESTACADO
+# 10. COMPETÊNCIAS & RESUMO EXECUTIVO DESTACADO
 # ==========================================
 col_comp, col_res = st.columns(2)
 
@@ -370,7 +362,7 @@ with col_res:
 st.markdown("---")
 
 # ==========================================
-# 12. CONTATO E REDES PROFISSIONAIS
+# 11. CONTATO E REDES PROFISSIONAIS
 # ==========================================
 st.header("Contato & Redes Profissionais")
 
@@ -396,7 +388,7 @@ with col3:
         st.caption("Currículo em PDF indisponível no momento.")
 
 # ==========================================
-# 13. RODAPÉ PROFISSIONAL
+# 12. RODAPÉ PROFISSIONAL
 # ==========================================
 st.markdown("""
 ---
