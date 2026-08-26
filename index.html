@@ -37,6 +37,13 @@
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
         }
 
+        .banner-img {
+            width: 100%;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            object-fit: cover;
+        }
+
         h1 {
             color: var(--primary);
             font-size: 32px;
@@ -162,6 +169,21 @@
             margin-bottom: 24px;
         }
 
+        .screenshot-container {
+            text-align: center;
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 24px;
+        }
+
+        .screenshot-container img {
+            width: 100%;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+        }
+
         .buttons-container {
             display: flex;
             flex-wrap: wrap;
@@ -212,6 +234,7 @@
             color: var(--text-muted);
             border-top: 1px solid var(--border-color);
             padding-top: 20px;
+            line-height: 1.5;
         }
 
         .footer a {
@@ -223,6 +246,9 @@
 <body>
 
     <div class="container">
+        <!-- Banner Opcional (Se tiver banner.png na raiz) -->
+        <img src="banner.png" alt="AWS Cyber Defense Banner" class="banner-img" onerror="this.style.display='none'">
+
         <h1>AWS Cyber Defense Platform</h1>
         <div class="subtitle">Cloud Security Operations Center (CSOC Enterprise)</div>
 
@@ -284,15 +310,24 @@
             <b>Deploy:</b> Streamlit Cloud + Render
         </div>
 
+        <div class="section-title">Demonstração do Painel</div>
+        <div class="screenshot-container">
+            <!-- Se tiver painel.png na raiz, ele aparecerá aqui -->
+            <img src="painel.png" alt="Dashboard Screenshot" onerror="this.style.display='none'">
+            <p style="margin: 8px 0 0 0; font-size: 13px; color: var(--text-muted);">Painel de Controle e Monitoramento de Segurança AWS</p>
+        </div>
+
         <div class="buttons-container">
-            <a class="btn" href="https://aws-security-analyzer.streamlit.app" target="_blank">Acessar Plataforma Online</a>
-            <a class="btn-outline" href="https://github.com/danilocosta2223-boop/aws-security-analyzer" target="_blank">Ver Código Fonte</a>
+            <a class="btn" href="https://aws-security-analyzer.streamlit.app" target="_blank">Acessar Plataforma</a>
+            <a class="btn-outline" href="https://github.com/danilocosta2223-boop/aws-security-analyzer" target="_blank">GitHub</a>
             <a class="btn-outline" href="https://www.linkedin.com/in/danilocosta2223" target="_blank">LinkedIn</a>
             <a class="btn-outline" href="curriculo.pdf" target="_blank">Baixar Currículo</a>
         </div>
 
         <div class="footer">
-            AWS Cyber Defense Platform • Desenvolvido por <a href="https://www.linkedin.com/in/danilocosta2223" target="_blank">Danilo Rafael da Silva Costa</a>
+            Desenvolvido por Danilo Rafael da Silva Costa<br>
+            <strong>Defesa Cibernética - FIAP</strong><br>
+            <a href="https://github.com/danilocosta2223-boop/aws-security-analyzer" target="_blank">Repositório Oficial do Projeto</a>
         </div>
     </div>
 
