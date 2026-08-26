@@ -7,33 +7,53 @@
 <style>
 body{
     font-family: Arial, sans-serif;
-    background:#f3f4f6;
+    background:#ffffff;
+    color:#0F172A;
     margin:0;
-    padding:40px;
+    padding:0;
+    transition: background 0.3s, color 0.3s;
 }
-.container{
-    max-width:1000px;
-    margin:auto;
-    background:white;
-    padding:30px;
-    border-radius:10px;
-    box-shadow:0 0 10px rgba(0,0,0,.1);
-}
-h1{
-    color:#1e3a8a;
+
+.top-bar{
+    background:#0F172A;
+    padding:20px;
+    color:white;
     text-align:center;
 }
+
+.top-bar h2{
+    color:white;
+    margin:0;
+}
+
+.container{
+    max-width:1000px;
+    margin:30px auto;
+    background:#F8FAFC;
+    padding:30px;
+    border-radius:10px;
+    box-shadow:0 4px 6px -1px rgba(0,0,0,.1);
+    transition: background 0.3s;
+}
+
+h1{
+    color:#0F172A;
+    text-align:center;
+}
+
 h2{
-    color:#2563eb;
-    border-bottom: 2px solid #e5e7eb;
+    color:#1E3A8A;
+    border-bottom: 2px solid #E2E8F0;
     padding-bottom: 5px;
     margin-top: 30px;
 }
+
 .banner{
     width:100%;
     border-radius:10px;
     margin-bottom:20px;
 }
+
 .foto{
     width:120px;
     height:120px;
@@ -43,39 +63,81 @@ h2{
     margin:auto;
     margin-bottom: 15px;
 }
+
 .btn{
     display:inline-block;
     padding:10px 18px;
     margin:5px;
-    background:#1e3a8a;
+    background:#1E3A8A;
     color:white;
     text-decoration:none;
     border-radius:6px;
     font-weight: bold;
     transition: background 0.3s;
+    border: none;
+    cursor: pointer;
 }
+
 .btn:hover {
-    background: #2563eb;
+    background: #2563EB;
 }
+
 .center{
     text-align:center;
 }
+
 hr {
     border: none;
-    border-top: 1px solid #e5e7eb;
+    border-top: 1px solid #E2E8F0;
     margin: 30px 0;
 }
+
 ul {
     list-style-type: square;
     padding-left: 20px;
 }
+
 li {
     margin-bottom: 6px;
-    color: #374151;
+    color: #334155;
+}
+
+/* Modo Escuro */
+.dark{
+    background:#0F172A;
+    color:#F8FAFC;
+}
+
+.dark .container{
+    background:#1E293B;
+    color:#F8FAFC;
+    box-shadow:0 4px 6px -1px rgba(0,0,0,.5);
+}
+
+.dark h1, .dark h2 {
+    color: #93C5FD;
+}
+
+.dark li {
+    color: #CBD5E1;
+}
+
+.dark .card {
+    background: #0F172A !important;
+    color: #F8FAFC;
+}
+
+.dark hr {
+    border-top: 1px solid #334155;
 }
 </style>
 </head>
 <body>
+
+<!-- Barra Superior -->
+<div class="top-bar">
+    <h2>AWS Cyber Defense Platform</h2>
+</div>
 
 <div class="container">
 
@@ -89,6 +151,7 @@ li {
         Defesa Cibernética - FIAP
     </p>
 
+    <!-- Painel de Navegação -->
     <h2>Painel de Navegação</h2>
     <div class="center">
         <a class="btn" href="index.html">Início</a>
@@ -98,6 +161,32 @@ li {
         <a class="btn" href="ec2.html">EC2</a>
         <a class="btn" href="guardduty.html">GuardDuty</a>
         <a class="btn" href="reports.html">Relatórios</a>
+    </div>
+
+    <!-- Cards de Indicadores de Segurança -->
+    <h2>Indicadores de Segurança</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px; margin-top: 15px;">
+        
+        <div class="card" style="background:white;padding:20px;border-radius:10px;border-left:5px solid #2563EB; box-shadow:0 2px 4px rgba(0,0,0,0.05);">
+            <h3 style="margin:0 0 10px 0; font-size: 1rem; color:#64748B;">Security Score</h3>
+            <h1 style="margin:0; color:#2563EB;">95%</h1>
+        </div>
+        
+        <div class="card" style="background:white;padding:20px;border-radius:10px;border-left:5px solid #22C55E; box-shadow:0 2px 4px rgba(0,0,0,0.05);">
+            <h3 style="margin:0 0 10px 0; font-size: 1rem; color:#64748B;">Compliance</h3>
+            <h1 style="margin:0; color:#22C55E;">92%</h1>
+        </div>
+        
+        <div class="card" style="background:white;padding:20px;border-radius:10px;border-left:5px solid #F59E0B; box-shadow:0 2px 4px rgba(0,0,0,0.05);">
+            <h3 style="margin:0 0 10px 0; font-size: 1rem; color:#64748B;">IAM Findings</h3>
+            <h1 style="margin:0; color:#F59E0B;">12</h1>
+        </div>
+        
+        <div class="card" style="background:white;padding:20px;border-radius:10px;border-left:5px solid #EF4444; box-shadow:0 2px 4px rgba(0,0,0,0.05);">
+            <h3 style="margin:0 0 10px 0; font-size: 1rem; color:#64748B;">Riscos Críticos</h3>
+            <h1 style="margin:0; color:#EF4444;">3</h1>
+        </div>
+        
     </div>
 
     <h2>Sobre o Projeto</h2>
@@ -157,12 +246,26 @@ li {
 
     <hr>
 
-    <p class="center" style="color: #6b7280; font-size: 0.9em;">
-        Desenvolvido por Danilo Rafael da Silva Costa<br>
-        FIAP • Defesa Cibernética • AWS Security Platform
-    </p>
+    <!-- Rodapé Corporativo -->
+    <footer style="text-align:center; color:#64748B; padding:10px 0;">
+        AWS Cyber Defense Platform<br>
+        Danilo Rafael da Silva Costa<br>
+        Defesa Cibernética - FIAP<br>
+        Versão 1.0
+    </footer>
 
 </div>
+
+<!-- Botão Flutuante para Alternar Tema -->
+<button onclick="alternarTema()" class="btn" style="position:fixed; top:20px; right:20px; z-index:1000; box-shadow:0 4px 6px rgba(0,0,0,0.2);">
+    ☀️ / 🌙 Tema
+</button>
+
+<script>
+function alternarTema(){
+    document.body.classList.toggle('dark');
+}
+</script>
 
 </body>
 </html>
