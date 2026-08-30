@@ -1,183 +1,401 @@
 import streamlit as st
-import json
-import os
 import pandas as pd
+from datetime import datetime, timedelta
+from streamlit_autorefresh import st_autorefresh
 
-# ==========================
-# CONFIGURAÇÃO DA PÁGINA
-# ==========================
+# ==========================================
+# 1. CONFIGURAÇÃO DA PÁGINA
+# ==========================================
 st.set_page_config(
-    page_title="IAM Security Center",
-    page_icon="👤",
-    layout="wide"
+    page_title="IAM Security | AWS Cyber Defense Platform",
+    page_icon="🔑",
+    layout="wide",
+    initial_sidebar_state="expanded"
 )
 
-# ==========================
-# ESTILO VISUAL CUSTOMIZADO (CSS)
-# ==========================
+# ==========================================
+# 2. ATUALIZAÇÃO AUTOMÁTICA (30s)
+# ==========================================
+st_autorefresh(interval=30000, key="iam_view_refresh")
+
+# ==========================================
+# 3. ESTILO CSS CORPORATIVO (DARK THEME)
+# ==========================================
 st.markdown("""
-    <style>
-    .stApp { background-color: #0f172a; color: #f8fafc; }
-    .hero-card {
-        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-        padding: 24px; border-radius: 16px; border: 1px solid #334155;
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4); margin-bottom: 24px;
+<style>
+    .stApp {
+        background: #111827;
+        color: #E5E7EB;
     }
-    </style>
+    
+    section[data-testid="stSidebar"] {
+        background-color: #1F2937;
+    }
+    
+    .hero-card {
+        background: #1F2937;
+        border: 1px solid #374151;
+        border-radius: 10px;
+        padding: 24px;
+        margin-bottom: 20px;
+    }
+
+    h1, h2, h3, h4 {
+        color: #93c5fd;
+    }
+</style>
 """, unsafe_allow_html=True)
 
-# ==========================
-# CARREGAR JSON
-# ==========================
-json_file = "reports/security_report.json"
-
-if not os.path.exists(json_file):
-    st.error(f"⚠️ O arquivo `{json_file}` não foi encontrado.")
-    st.stop()
-
-with open(json_file, "r", encoding="utf-8") as f:
-    data = json.load(f)
-
-# ==========================
-# CABEÇALHO
-# ==========================
+# ==========================================
+# 4. HERO CARD - GESTÃO DE IAM
+# ==========================================
 st.markdown("""
-    <div class="hero-card">
-        <h1>👤 IAM Security Center</h1>
-        <p style="color: #94a3b8; margin: 0; font-size: 15px;">Gestão de identidade, autenticação, privilégios e credenciais AWS</p>
-    </div>
+<div class="hero-card">
+    <h1>IAM Security & Access Governance</h1>
+    <p style="color:#9ca3af; margin: 0; font-size: 15px;">
+        Auditoria contínua de identidades, usuários, políticas de privilégios e rotação de credenciais na AWS.
+    </p>
+</div>
 """, unsafe_allow_html=True)
 
-# ==========================
-# MÉTRICAS
-# ==========================
-col1, col2, col3, col4 = st.columns(4)
-
-with col1:
-    st.metric("Usuários IAM", "18")
-with col2:
-    st.metric("MFA Ativado", "16")
-with col3:
-    st.metric("Sem MFA", "2", delta="Atenção", delta_color="inverse")
-with col4:
-    st.metric("Access Keys Antigas", "2", delta="Risco", delta_color="inverse")
-
-# ==========================
-# SCORE IAM
-# ==========================
-iam_score = 75
+st.markdown(f"""
+<div style="font-size: 13px; color: #9ca3af; margin-bottom: 20px;">
+    <b>Status do Módulo:</b> Ativo &nbsp;|&nbsp; 
+    <b>Última varredura IAM:</b> {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}
+</div>
+""", unsafe_allow_html=True)
 
 st.markdown("---")
-st.subheader("📊 IAM Security Score")
+
+# ==========================================
+# 5. IAM MISSION CONTROL (Métricas Principais)
+# ==========================================
+st.subheader("IAM Mission Control")
+
+m1, m2, m3, m4, m5 = st.columns(5)
+
+m1.metric("Usuários Totais", "42")
+m2.metric("Sem MFA Ativo", "3", delta="-1", delta_color="inverse")
+m3.metric("Chaves > 90 Dias", "5", delta="+2", delta_color="inverse")
+m4.metric("Políticas Admin", "8")
+m5.metric("Compliance Score", "89%")
+
+st.markdown("---")
+
+# ==========================================
+# 6. IAM HEALTH SCORE & IAM RISK SCORE
+# ==========================================
+st.subheader("IAM Health Score")
+
+iam_score = 89
 st.progress(iam_score / 100)
-st.metric("Pontuação IAM", f"{iam_score}/100")
-
-# ==========================
-# RESUMO EXECUTIVO
-# ==========================
-iam_findings = [
-    item for item in data.get("findings", [])
-    if item["service"].upper() == "IAM"
-]
+st.success(f"Nível de Saúde de Acessos: {iam_score}%")
 
 st.markdown("---")
-st.subheader("📋 Executive Summary")
 
-st.info(f"""
-O módulo IAM identificou **{len(iam_findings)} achado(s)** relacionado(s) à gestão de identidade e acesso.
+st.subheader("IAM Risk Score")
 
-Principais riscos:
+risk_score = 82
 
-• Usuários sem MFA
+st.progress(risk_score / 100)
+st.error(
+f"IAM Risk Score: {risk_score}%"
+)
 
-• Access Keys antigas
-
-• Possíveis permissões excessivas
-
-Recomenda-se correção imediata dos itens classificados como críticos.
-""")
-
-# ==========================
-# TABELA DE USUÁRIOS
-# ==========================
 st.markdown("---")
-st.subheader("👥 Usuários IAM")
 
-usuarios = pd.DataFrame({
-    "Usuário": ["admin-user", "security-admin", "developer-user"],
-    "MFA": ["Não", "Sim", "Sim"],
-    "Access Key": ["Ativa", "Ativa", "Ativa"],
-    "Status": ["Crítico", "OK", "OK"]
+# ==========================================
+# 7. FILTROS DE ANÁLISE DE IDENTIDADES
+# ==========================================
+st.subheader("Filtros de Identidades")
+
+col_f1, col_f2, col_f3 = st.columns(3)
+
+with col_f1:
+    filtro_mfa = st.selectbox("Status de MFA", ["Todos", "Ativo", "Inativo (Risco)"])
+with col_f2:
+    filtro_tipo = st.selectbox("Tipo de Credencial", ["Todos", "Usuário IAM", "Role / Service Account", "Access Key"])
+with col_f3:
+    filtro_status_chave = st.selectbox("Idade da Chave", ["Todos", "Recente (< 30 dias)", "Alerta (> 90 dias)"])
+
+st.markdown("---")
+
+# ==========================================
+# 8. BASE DE DADOS DE USUÁRIOS E CREDENCIAIS (MOCK)
+# ==========================================
+iam_df = pd.DataFrame({
+    "Usuário / Entidade": [
+        "admin-devops",
+        "suporte-sistema",
+        "pipeline-ci-cd",
+        "joao.silva",
+        "maria.costa",
+        "lambda-executor-role"
+    ],
+    "Tipo": [
+        "Usuário IAM",
+        "Usuário IAM",
+        "Access Key",
+        "Usuário IAM",
+        "Usuário IAM",
+        "Role / Service Account"
+    ],
+    "MFA": [
+        "Ativo",
+        "Inativo",
+        "N/A",
+        "Ativo",
+        "Inativo",
+        "N/A"
+    ],
+    "Último Acesso": [
+        "Há 10 minutos",
+        "Há 2 dias",
+        "Há 1 hora",
+        "Há 5 dias",
+        "Há 45 dias",
+        "Em tempo real"
+    ],
+    "Risco": [
+        "Baixo",
+        "Critical",
+        "Medium",
+        "Baixo",
+        "High",
+        "Baixo"
+    ]
 })
 
-st.dataframe(usuarios, use_container_width=True)
+# Aplicando Filtros Básicos
+df_iam_filtrado = iam_df.copy()
+if filtro_mfa == "Ativo":
+    df_iam_filtrado = df_iam_filtrado[df_iam_filtrado["MFA"] == "Ativo"]
+elif filtro_mfa == "Inativo (Risco)":
+    df_iam_filtrado = df_iam_filtrado[df_iam_filtrado["MFA"] == "Inativo"]
 
-# ==========================
-# ACHADOS IAM (Filtrado do JSON)
-# ==========================
-st.markdown("---")
-st.subheader("🚨 Achados de Segurança (IAM)")
+# ==========================================
+# 9. TABELA PRINCIPAL DE IDENTIDADES
+# ==========================================
+st.subheader("Auditoria de Identidades e Contas")
 
-if iam_findings:
-    for finding in iam_findings:
-        st.error(f"""
-**Recurso Afetado:** `{finding['resource']}`  
-**Problema:** {finding['issue']}  
-**Recomendação:** {finding['recommendation']}
-        """)
-else:
-    st.success("🟢 Nenhum problema crítico de IAM encontrado no relatório atual.")
-
-# ==========================
-# CHECKLIST
-# ==========================
-st.markdown("---")
-st.subheader("✅ Checklist de Postura IAM")
-
-st.checkbox("Conta Root protegida com MFA de Hardware", value=True, disabled=True)
-st.checkbox("CloudTrail ativo globalmente", value=True, disabled=True)
-st.checkbox("Política de senha forte habilitada", value=True, disabled=True)
-st.checkbox("MFA obrigatório para todos os usuários IAM", value=False, disabled=True)
-
-# ==========================
-# RISCOS
-# ==========================
-st.markdown("---")
-st.subheader("⚠️ Principais Riscos Identificados")
-
-st.warning("🔒 **MFA desabilitado:** Aumenta significativamente o risco de comprometimento de credenciais em caso de vazamento de senhas.")
-st.warning("🔑 **Access Keys antigas:** Chaves de acesso de longa duração sem rotação podem estar expostas ou comprometidas.")
-st.warning("⚡ **Permissões excessivas:** Políticas com privilégios amplos abrem margem para escalação de privilégios na conta.")
-
-# ==========================
-# PLANO DE CORREÇÃO
-# ==========================
-st.markdown("---")
-st.subheader("🛠️ Plano de Correção Recomendado")
-
-st.markdown("""
-1. **Forçar MFA:** Enviar notificação ou aplicar política SCP/IAM exigindo MFA para todos os usuários.
-2. **Rotacionar Chaves:** Identificar e revogar `Access Keys` com mais de 90 dias de uso.
-3. **Princípio do Menor Privilégio:** Auditar políticas do tipo `AdministratorAccess` associadas a usuários humanos e substituí-las por funções baseadas em tarefas (`IAM Roles`).
-4. **Revisão Periódica:** Agendar varreduras semanais automatizadas com o pipeline de segurança.
-""")
-
-# ==========================
-# EXEMPLO AWS CLI
-# ==========================
-st.markdown("---")
-st.subheader("💻 Exemplo de Correção")
-
-st.code(
-    """
-aws iam enable-mfa-device \\
-    --user-name admin-user
-    """,
-    language="bash"
+st.dataframe(
+    df_iam_filtrado,
+    use_container_width=True,
+    hide_index=True
 )
 
-# ==========================
-# RODAPÉ
-# ==========================
 st.markdown("---")
-st.markdown("<p style='text-align: center; color: #64748b;'>AWS Cyber Defense Platform • Módulo IAM</p>", unsafe_allow_html=True)
+
+# ==========================================
+# 10. IAM COMPLIANCE CENTER
+# ==========================================
+st.subheader("IAM Compliance Center")
+
+compliance_df = pd.DataFrame({
+"Controle": [
+"MFA",
+"Password Policy",
+"Access Keys",
+"Least Privilege"
+],
+"Compliance": [
+"92%",
+"100%",
+"85%",
+"88%"
+]
+})
+
+st.dataframe(
+compliance_df,
+use_container_width=True,
+hide_index=True
+)
+
+st.markdown("---")
+
+# ==========================================
+# 11. PRIVILEGED ACCESS REVIEW
+# ==========================================
+st.subheader("Privileged Access Review")
+
+admin_df = pd.DataFrame({
+"Conta": [
+"admin-devops",
+"root-account",
+"cloud-admin"
+],
+"Permissão": [
+"AdministratorAccess",
+"Full Access",
+"AdministratorAccess"
+]
+})
+
+st.dataframe(
+admin_df,
+use_container_width=True,
+hide_index=True
+)
+
+st.markdown("---")
+
+# ==========================================
+# 12. IAM THREAT EXPOSURE
+# ==========================================
+st.subheader("IAM Threat Exposure")
+
+exposure_df = pd.DataFrame({
+"Risco": [
+"Sem MFA",
+"Access Key Antiga",
+"Admin Excessivo"
+],
+"Quantidade": [
+3,
+5,
+8
+]
+})
+
+st.bar_chart(
+exposure_df.set_index("Risco")
+)
+
+st.markdown("---")
+
+# ==========================================
+# 13. IDENTITY INTELLIGENCE
+# ==========================================
+st.subheader("Identity Intelligence")
+
+st.info("""
+Resumo Executivo
+
+• 3 usuários sem MFA.
+
+• 5 chaves acima de 90 dias.
+
+• 8 permissões administrativas.
+
+• Recomenda-se aplicar menor privilégio.
+""")
+
+st.markdown("---")
+
+# ==========================================
+# 14. ACCESS KEY MANAGEMENT
+# ==========================================
+st.subheader("Access Key Management")
+
+keys_df = pd.DataFrame({
+"Usuário": [
+"pipeline-ci-cd",
+"backup-service",
+"integration-api"
+],
+"Idade": [
+"120 dias",
+"15 dias",
+"95 dias"
+],
+"Status": [
+"Rotacionar",
+"OK",
+"Rotacionar"
+]
+})
+
+st.dataframe(
+keys_df,
+use_container_width=True,
+hide_index=True
+)
+
+st.markdown("---")
+
+# ==========================================
+# 15. IAM EXECUTIVE REPORT
+# ==========================================
+st.subheader("IAM Executive Report")
+
+report = f"""
+IAM SECURITY REPORT
+
+Usuários:
+42
+
+Sem MFA:
+3
+
+Access Keys >90 dias:
+5
+
+Políticas Admin:
+8
+
+IAM Health:
+89%
+"""
+
+st.download_button(
+"📥 Baixar Relatório IAM",
+report,
+file_name="iam_report.txt"
+)
+
+st.markdown("---")
+
+# ==========================================
+# 16. IAM COPILOT (Assistente Inteligente)
+# ==========================================
+st.subheader("IAM Copilot")
+
+iam_question = st.text_area("Pergunte sobre políticas, acessos ou remediação de usuários IAM:")
+
+if st.button("Analisar Acessos via Copilot"):
+    q = iam_question.lower()
+    if "mfa" in q:
+        st.info(
+        "Existem 3 contas sem MFA ativo."
+        )
+    elif "risco" in q:
+        st.info(
+        "O principal risco é MFA ausente e excesso de privilégios."
+        )
+    elif "key" in q or "chave" in q:
+        st.info(
+        "Existem chaves acima de 90 dias que precisam de rotação."
+        )
+    elif "privilegio" in q or "admin" in q:
+        st.info("Foram detectadas 8 políticas com privilégios de AdministratorAccess. Considere aplicar o princípio do menor privilégio (PoLP).")
+    else:
+        st.info("Análise de segurança IAM concluída. Nenhuma anomalia severa fora do padrão mapeado foi encontrada.")
+
+st.markdown("---")
+
+# ==========================================
+# 17. NAVEGAÇÃO INTEGRADA
+# ==========================================
+st.subheader("Navegação Integrada")
+
+n1, n2, n3, n4, n5, n6 = st.columns(6)
+
+with n1:
+    st.page_link("pages/security_center.py", label="Security Center")
+with n2:
+    st.page_link("pages/security_hub.py", label="Security Hub")
+with n3:
+    st.page_link("pages/security_copilot.py", label="Security Copilot")
+with n4:
+    st.page_link("pages/threat_intelligence.py", label="Threat Intelligence")
+with n5:
+    st.page_link("pages/compliance.py", label="Compliance")
+with n6:
+    st.page_link("pages/history.py", label="Audit History")
+
+# ==========================================
+# RODAPÉ DO MÓDULO
+# ==========================================
+st.markdown("---")
+st.caption(f"AWS Cyber Defense Platform • IAM Security Module • Todos os direitos reservados © {datetime.now().year} • Sincronizado em {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}")

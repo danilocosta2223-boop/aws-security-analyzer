@@ -8,7 +8,7 @@ from streamlit_autorefresh import st_autorefresh
 # 1. CONFIGURAÇÃO DA PÁGINA
 # ==========================
 st.set_page_config(
-    page_title="Compliance & Frameworks Dashboard | AWS Cyber Defense Platform",
+    page_title="Compliance & Frameworks Dashboard | AWS Cyber Defense",
     page_icon=None,
     layout="wide",
     initial_sidebar_state="expanded"
@@ -20,18 +20,22 @@ st.set_page_config(
 st_autorefresh(interval=15000, key="compliance_refresh")
 
 # ==========================
-# 3. ESTILO CSS CORPORATIVO
+# 3. ESTILO CSS CORPORATIVO (RAW HTML)
 # ==========================
 st.markdown("""
 <style>
     .stApp {
-        background-color: #ffffff;
-        color: #1e3a5f;
+        background: #111827;
+        color: #E5E7EB;
+    }
+    
+    section[data-testid="stSidebar"] {
+        background-color: #1F2937;
     }
     
     .hero-card {
-        background-color: #f3f4f6;
-        border: 1px solid #d1d5db;
+        background: #1F2937;
+        border: 1px solid #374151;
         border-radius: 10px;
         padding: 24px;
         margin-bottom: 20px;
@@ -44,13 +48,13 @@ st.markdown("""
         border-radius: 20px;
         font-size: 13px;
         font-weight: 600;
-        background-color: #f8f9fa;
-        color: #1e3a8a;
-        border: 1px solid #d1d5db;
+        background-color: #374151;
+        color: #93c5fd;
+        border: 1px solid #4b5563;
     }
 
     h1, h2, h3, h4 {
-        color: #1e3a8a;
+        color: #93c5fd;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -67,7 +71,6 @@ def carregar_dados_compliance():
     config = requests.get("http://127.0.0.1:3000/api/config").json()
     return score, iam, s3, ec2, config
 
-# Tratamento de erro caso o Node.js esteja offline
 try:
     score_data, iam_data, s3_data, ec2_data, config_data = carregar_dados_compliance()
     backend_online = True
@@ -90,29 +93,21 @@ nist_score = max(100 - (critical_findings * 4), 50)
 iso_score = max(100 - (critical_findings * 3), 50)
 
 # ==========================
-# 6. STATUS GERAL DA PLATAFORMA
-# ==========================
-if critical_findings == 0:
-    st.success("Todos os módulos de Compliance e Governança estão operacionais e sem desvios críticos.")
-else:
-    st.warning("Módulos operacionais, porém foram detectados desvios que requerem atenção de governança.")
-
-# ==========================
-# 7. CABEÇALHO DO MÓDULO
+# 6. CABEÇALHO DO MÓDULO (RAW HTML)
 # ==========================
 st.markdown("""
 <div class="hero-card">
     <h1>Compliance & Frameworks Dashboard</h1>
-    <p style="color: #4b5563; margin: 0; font-size: 15px;">
+    <p style="color: #9ca3af; margin: 0; font-size: 15px;">
         Centro de governança e conformidade contínua, monitoramento de padrões globais e postura de segurança integrada.
     </p>
 </div>
 """, unsafe_allow_html=True)
 
 st.markdown(f"""
-<div style="font-size: 13px; color: #4b5563; margin-bottom: 20px;">
-    <b>Status do Módulo:</b> Operacional &nbsp;|&nbsp; 
-    <b>Última sincronização:</b> {datetime.now().strftime('%d/%m/%Y %H:%M:%S')} &nbsp;|&nbsp;
+<div style="font-size: 13px; color: #9ca3af; margin-bottom: 20px;">
+    <b>Status do Módulo:</b> Operacional | 
+    <b>Última sincronização:</b> {datetime.now().strftime('%d/%m/%Y %H:%M:%S')} |
     <b>Desvios Críticos:</b> {critical_findings}
 </div>
 """, unsafe_allow_html=True)
@@ -120,176 +115,160 @@ st.markdown(f"""
 st.markdown("---")
 
 # ==========================
-# 8. EXECUTIVE DASHBOARD & SECURITY POSTURE SCORE
+# 7. COMPLIANCE EXECUTIVE SUMMARY & POSTURE
 # ==========================
-st.subheader("Executive Dashboard")
-
-col1, col2, col3 = st.columns(3)
+st.subheader("Executive Dashboard & Score")
+col1, col2, col3, col4 = st.columns(4)
 
 with col1:
-    st.metric(
-        label="CIS AWS Foundations Benchmark",
-        value=f"{cis_score}%",
-        delta="-2% vs última semana" if critical_findings > 0 else "Estável",
-        delta_color="inverse" if critical_findings > 0 else "normal"
-    )
-
+    st.metric("CIS Benchmark", f"{cis_score}%", "-2%" if critical_findings > 0 else "Estável", delta_color="inverse")
 with col2:
-    st.metric(
-        label="NIST CSF (Cybersecurity Framework)",
-        value=f"{nist_score}%",
-        delta="Conforme" if critical_findings == 0 else "Requer Atenção"
-    )
-
+    st.metric("NIST CSF", f"{nist_score}%", "Atenção" if critical_findings > 0 else "Conforme")
 with col3:
-    st.metric(
-        label="ISO/IEC 27001",
-        value=f"{iso_score}%",
-        delta="Revisão Pendente" if critical_findings > 0 else "Conforme"
+    st.metric("ISO 27001", f"{iso_score}%", "Revisão" if critical_findings > 0 else "Conforme")
+with col4:
+    st.metric("Score Geral", f"{score_data.get('score', 85)}/100")
+
+st.markdown("---")
+
+# ==========================
+# 8. LABORATÓRIO DE AUDITORIA SIMULADA (COM ESCOPO)
+# ==========================
+st.subheader("Laboratório de Auditoria")
+
+col_fw, col_scope = st.columns(2)
+with col_fw:
+    framework_escolhido = st.selectbox(
+        "Framework de Referência",
+        ["CIS Benchmark", "NIST CSF", "ISO 27001"]
+    )
+with col_scope:
+    auditoria_escopo = st.selectbox(
+        "Escopo de Avaliação",
+        ["IAM", "S3", "EC2", "Completo"]
     )
 
-st.markdown("---")
-
-# Security Posture Score
-st.subheader("Security Posture Score")
-security_score = score_data.get("score", 85)
-st.progress(security_score / 100)
-st.metric("Score Geral de Postura", f"{security_score}/100")
-
-st.markdown("---")
-
-# ==========================
-# 9. EXECUTIVE SUMMARY & RECURSOS IMPACTADOS
-# ==========================
-st.subheader("Executive Summary")
-
-if critical_findings > 0:
-    st.warning(f"Foram identificados {critical_findings} desvios críticos impactando a conformidade geral da conta AWS.")
-else:
-    st.success("Nenhum impacto crítico detectado nos controles avaliados.")
-
-st.markdown("---")
-
-st.subheader("Recursos Impactados")
-r1, r2, r3 = st.columns(3)
-with r1:
-    st.write(f"IAM Sem MFA: {mfa_off}")
-with r2:
-    st.write(f"Buckets Públicos: {public_buckets}")
-with r3:
-    st.write(f"Security Groups Expostos: {open_sg}")
+if st.button("Executar Auditoria"):
+    st.success(f"Auditoria {framework_escolhido} concluída com sucesso.")
+    
+    # Lógica de simulação de escopo
+    if auditoria_escopo == "IAM":
+        st.write("Controles avaliados: 15")
+        st.markdown("- **IAM.1 (MFA Root):** Conforme\n- **IAM.2 (Key Rotation):** Atenção")
+    elif auditoria_escopo == "S3":
+        st.write("Controles avaliados: 10")
+        st.markdown("- **S3.1 (Public Access):** Não Conforme\n- **S3.2 (Encryption):** Conforme")
+    elif auditoria_escopo == "EC2":
+        st.write("Controles avaliados: 20")
+        st.markdown("- **EC2.1 (Port 22 Open):** Não Conforme\n- **EC2.2 (IMDSv2):** Conforme")
+    else:
+        st.write("Controles avaliados: 45")
+        st.markdown("- Auditoria completa finalizada em todos os serviços essenciais.")
 
 st.markdown("---")
 
 # ==========================
-# 10. ACHADOS CRÍTICOS DETALHADOS
+# 9. SIMULAÇÃO DE REMEDIAÇÃO CONTROLADA
 # ==========================
-st.subheader("Achados Críticos")
+st.subheader("Remediação Controlada")
 
-if mfa_off > 0:
-    st.error(f"{mfa_off} usuários operando sem autenticação multifator (MFA).")
-if public_buckets > 0:
-    st.error(f"{public_buckets} buckets S3 públicos detectados.")
-if open_sg > 0:
-    st.warning(f"{open_sg} Security Groups com exposição externa perimetral.")
-
-if critical_findings == 0:
-    st.success("Nenhum achado crítico pendente de remediação.")
-
-st.markdown("---")
-
-# ==========================
-# 11. INVENTÁRIO MONITORADO
-# ==========================
-st.subheader("Inventário Monitorado")
-
-c1, c2, c3, c4 = st.columns(4)
-c1.metric("Usuários IAM", iam_data.get("totalUsers", 0))
-c2.metric("Buckets S3", s3_data.get("totalBuckets", 0))
-c3.metric("Instâncias EC2", ec2_data.get("totalInstances", 0))
-c4.metric("Regras AWS Config", config_data.get("evaluatedRules", 45))
-
-st.markdown("---")
-
-# ==========================
-# 12. FRAMEWORK STATUS E CORRELAÇÃO
-# ==========================
-st.subheader("Status de Aderência por Framework")
-
-framework_df = pd.DataFrame({
-    "Framework": ["CIS Benchmark v1.5.0", "NIST SP 800-53", "ISO 27001:2022", "PCI-DSS v4.0", "SOC 2 Type II"],
-    "Controles Avaliados": [45, 110, 93, 64, 85],
-    "Compliance (%)": [cis_score, nist_score, iso_score, 96, 98],
-    "Status": ["Atenção Requerida" if critical_findings > 0 else "Conforme", "Conforme", "Conforme", "Atenção Requerida" if critical_findings > 0 else "Conforme", "Conforme"]
-})
-
-st.dataframe(framework_df, use_container_width=True, hide_index=True)
-
-st.markdown("---")
-st.subheader("Framework Correlation")
-st.write(
-    """
-    - **CIS Benchmark:** Governança de Configuração e Endurecimento de Ativos
-    - **NIST CSF:** Gestão de Riscos, Identificação e Resposta a Incidentes
-    - **ISO 27001:** Controles de Segurança da Informação e Gestão de Acesso
-    - **PCI-DSS:** Proteção de Dados Sensíveis e Cartões de Pagamento
-    - **SOC 2:** Segurança Operacional, Disponibilidade e Integridade de Processos
-    """
+acao = st.selectbox(
+    "Selecionar Ação para Execução Rápida",
+    [
+        "Ativar MFA (Root/Admin)",
+        "Bloquear Bucket Público (Block Public Access)",
+        "Fechar Security Group (Porta 22/3389)"
+    ]
 )
 
-# Gráfico de Compliance por Framework
-chart_df = pd.DataFrame({
-    "Framework": ["CIS Benchmark", "NIST CSF", "ISO 27001", "PCI-DSS", "SOC 2"],
-    "Compliance": [cis_score, nist_score, iso_score, 96, 98]
-})
-st.bar_chart(chart_df.set_index("Framework"))
+if st.button("Executar Remediação"):
+    st.success(f"Ação '{acao}' iniciada e aplicada no ambiente simulado.")
+
+st.markdown("---")
 
 # ==========================
-# 13. TENDÊNCIA DE COMPLIANCE (HISTÓRICO)
+# 10. GOVERNANÇA, SLA E STATUS DE REMEDIAÇÃO
+# ==========================
+st.subheader("Governança de Correções e SLA")
+gov_col1, gov_col2 = st.columns(2)
+
+with gov_col1:
+    owners = pd.DataFrame({
+        "Controle": ["IAM", "S3", "EC2"],
+        "Responsável": ["Equipe IAM", "Equipe Cloud", "Equipe Infraestrutura"],
+        "Status": ["Aberto", "Aberto", "Em análise"],
+        "Prazo (SLA)": ["7 dias", "3 dias", "15 dias"]
+    })
+    st.dataframe(owners, use_container_width=True, hide_index=True)
+
+with gov_col2:
+    remediation = pd.DataFrame({
+        "Ação de Remediação": ["Ativar MFA", "Bloquear Bucket Público", "Revisão de Security Group"],
+        "Progresso": ["100%", "50%", "80%"]
+    })
+    st.dataframe(remediation, use_container_width=True, hide_index=True)
+
+st.markdown("---")
+
+# ==========================
+# 11. CENTRO DE EVIDÊNCIAS COM SIMULAÇÃO POR TIPO
+# ==========================
+st.subheader("Repositório de Evidências (Download)")
+
+tipo_evidencia = st.selectbox(
+    "Tipo de Evidência para Exportação",
+    ["IAM", "CloudTrail", "Config", "S3", "Completo"]
+)
+
+evidencia_texto = f"""
+========================================
+EVIDÊNCIA DE COMPLIANCE - {tipo_evidencia.upper()}
+========================================
+Data de Extração: {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}
+Framework Aplicado: {framework_escolhido}
+Escopo Avaliado: {auditoria_escopo}
+
+Status de Validação: Conforme com ressalvas.
+Score Registrado: {score_data.get('score', 85)}/100
+Hash de Validação: a8f9c1...
+========================================
+Este relatório foi gerado automaticamente pela AWS Cyber Defense Platform.
+"""
+
+st.download_button(
+    label=f"Baixar Evidência ({tipo_evidencia})",
+    data=evidencia_texto,
+    file_name=f"evidence_{tipo_evidencia.lower()}.txt",
+    mime="text/plain"
+)
+
+st.markdown("---")
+
+# ==========================
+# 12. CENTRO EDUCACIONAL E COMPLIANCE CHALLENGE
+# ==========================
+st.subheader("Compliance Challenge")
+st.write("Teste seus conhecimentos de resposta a incidentes de compliance:")
+
+st.info("**Cenário:** O módulo AWS Config detectou um Bucket S3 contendo dados sensíveis com acesso público (ACL e Policy abertas).")
+resposta_challenge = st.radio(
+    "Qual a ação de remediação recomendada pelo AWS Well-Architected Framework?",
+    [
+        "Manter público e monitorar via CloudTrail.",
+        "Habilitar o 'Block Public Access' (BPA) no S3.",
+        "Criar uma nova VPC e mover o bucket."
+    ]
+)
+
+if st.button("Validar Resposta"):
+    if resposta_challenge == "Habilitar o 'Block Public Access' (BPA) no S3.":
+        st.success("Correto! O Block Public Access é a medida de mitigação imediata recomendada para isolar a exposição.")
+        st.balloons()
+    else:
+        st.error("Incorreto. Revise as políticas do AWS S3 e o controle de Block Public Access.")
+
+# ==========================
+# RODAPÉ
 # ==========================
 st.markdown("---")
-st.subheader("Tendência de Compliance")
-
-history_df = pd.DataFrame({
-    "Data": ["20/08", "21/08", "22/08", "23/08", "24/08"],
-    "Compliance": [88, 90, 91, 93, cis_score]
-})
-
-st.line_chart(history_df.set_index("Data"))
-
-# ==========================
-# 14. TIMELINE DE EVENTOS RECENTES
-# ==========================
-st.markdown("---")
-st.subheader("Timeline")
-
-timeline_events = [
-    "Avaliação contínua de políticas de acesso IAM executada",
-    "Verificação de posture score e sincronização com Security Hub",
-    "Varredura de conformidade via regras do AWS Config"
-]
-
-for evento in timeline_events:
-    st.write(f"{datetime.now().strftime('%H:%M:%S')} - {evento}")
-
-# ==========================
-# 15. HEALTH CHECK DOS SERVIÇOS
-# ==========================
-st.markdown("---")
-st.subheader("Health Check dos Serviços")
-
-health_df = pd.DataFrame([
-    ["IAM", "Online" if backend_online else "Offline"],
-    ["S3", "Online" if backend_online else "Offline"],
-    ["EC2", "Online" if backend_online else "Offline"],
-    ["Config", "Online" if backend_online else "Offline"],
-    ["Backend Node.js", "Online" if backend_online else "Offline"]
-], columns=["Serviço", "Status"])
-
-st.dataframe(health_df, use_container_width=True, hide_index=True)
-
-# ==========================
-# RODAPÉ DA PÁGINA
-# ==========================
-st.markdown("---")
-st.caption(f"AWS Cyber Defense Platform • Centro de Governança e Compliance • Última atualização: {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}")
+st.caption(f"AWS Cyber Defense Platform • Centro de Governança • Última atualização: {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}")

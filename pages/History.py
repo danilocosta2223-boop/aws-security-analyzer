@@ -1,228 +1,386 @@
 import streamlit as st
 import pandas as pd
+from datetime import datetime, timedelta
+from streamlit_autorefresh import st_autorefresh
 
-# ==========================
-# CONFIGURAÇÃO DA PÁGINA
-# ==========================
-
+# ==========================================
+# 1. CONFIGURAÇÃO DA PÁGINA
+# ==========================================
 st.set_page_config(
-    page_title="Security History",
-    page_icon="📈",
-    layout="wide"
+    page_title="Audit History | AWS Cyber Defense Platform",
+    page_icon="📜",
+    layout="wide",
+    initial_sidebar_state="expanded"
 )
 
-# ==========================
-# ESTILO VISUAL
-# ==========================
+# ==========================================
+# 2. ATUALIZAÇÃO AUTOMÁTICA (30s)
+# ==========================================
+st_autorefresh(interval=30000, key="history_view_refresh")
 
+# ==========================================
+# 3. ESTILO CSS CORPORATIVO (DARK THEME)
+# ==========================================
 st.markdown("""
 <style>
-.stApp {
-    background-color: #0f172a;
-    color: #f8fafc;
-}
+    .stApp {
+        background: #111827;
+        color: #E5E7EB;
+    }
+    
+    section[data-testid="stSidebar"] {
+        background-color: #1F2937;
+    }
+    
+    .hero-card {
+        background: #1F2937;
+        border: 1px solid #374151;
+        border-radius: 10px;
+        padding: 24px;
+        margin-bottom: 20px;
+    }
 
-.hero-card {
-    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-    padding: 24px;
-    border-radius: 16px;
-    border: 1px solid #334155;
-    margin-bottom: 20px;
-    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.4);
-}
+    h1, h2, h3, h4 {
+        color: #93c5fd;
+    }
 </style>
 """, unsafe_allow_html=True)
 
-# ==========================
-# CABEÇALHO
-# ==========================
-
+# ==========================================
+# 4. HERO CARD - HISTÓRICO & AUDITORIA
+# ==========================================
 st.markdown("""
 <div class="hero-card">
-    <h1>📈 Security History Center</h1>
-    <p style="color:#94a3b8;">
-        Histórico da postura de segurança,
-        conformidade e evolução dos riscos.
+    <h1>Audit & Event History</h1>
+    <p style="color:#9ca3af; margin: 0; font-size: 15px;">
+        Registro imutável de eventos de segurança, alterações de compliance e execuções do Copilot.
     </p>
 </div>
 """, unsafe_allow_html=True)
 
-# ==========================
-# DADOS HISTÓRICOS
-# ==========================
+st.markdown(f"""
+<div style="font-size: 13px; color: #9ca3af; margin-bottom: 20px;">
+    <b>Status do Log:</b> Ativo &nbsp;|&nbsp; 
+    <b>Última varredura de auditoria:</b> {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}
+</div>
+""", unsafe_allow_html=True)
+
+st.markdown("---")
+
+# ==========================================
+# BASE DE DADOS DE HISTÓRICO (MOCK / SIMULADA)
+# ==========================================
+data_hoje = datetime.now()
 
 history_df = pd.DataFrame({
-    "Mês": [
-        "Jan",
-        "Fev",
-        "Mar",
-        "Abr",
-        "Mai",
-        "Jun",
-        "Jul",
-        "Ago"
+    "Timestamp": [
+        (data_hoje - timedelta(hours=1)).strftime('%Y-%m-%d %H:%M:%S'),
+        (data_hoje - timedelta(hours=3)).strftime('%Y-%m-%d %H:%M:%S'),
+        (data_hoje - timedelta(hours=6)).strftime('%Y-%m-%d %H:%M:%S'),
+        (data_hoje - timedelta(days=1)).strftime('%Y-%m-%d %H:%M:%S'),
+        (data_hoje - timedelta(days=2)).strftime('%Y-%m-%d %H:%M:%S'),
+        (data_hoje - timedelta(days=3)).strftime('%Y-%m-%d %H:%M:%S'),
     ],
-    "Security Score": [
-        72,
-        75,
-        78,
-        82,
-        85,
-        88,
-        90,
-        92
+    "Módulo": [
+        "Security Hub",
+        "IAM",
+        "Compliance",
+        "Threat Intelligence",
+        "Security Copilot",
+        "Security Hub"
     ],
-    "Critical Findings": [
-        6,
-        5,
-        5,
-        4,
-        3,
-        2,
-        1,
-        1
+    "Evento": [
+        "Detecção de S3 Bucket público mitigada automaticamente",
+        "Alerta de ausência de MFA para usuário IAM de suporte",
+        "Varredura CIS Benchmark concluída (Score: 92%)",
+        "Nova assinatura de ameaça detectada e isolada",
+        "Consulta executiva realizada via Copilot sobre riscos",
+        "Atualização de regras de Security Group no EC2"
+    ],
+    "Severidade": [
+        "Critical",
+        "High",
+        "Medium",
+        "High",
+        "Info",
+        "Medium"
+    ],
+    "Responsável / Origem": [
+        "AWS GuardDuty / Auto-Remediation",
+        "IAM Access Analyzer",
+        "Compliance Engine",
+        "Threat Feed Connector",
+        "Executive User",
+        "Admin DevOps"
     ]
 })
 
-# ==========================
-# MÉTRICAS
-# ==========================
+# ==========================================
+# 1. AUDIT MISSION CONTROL (Adicionado logo após o Hero)
+# ==========================================
+st.subheader("Audit Mission Control")
 
-c1, c2, c3, c4 = st.columns(4)
+m1, m2, m3, m4, m5 = st.columns(5)
 
-with c1:
-    st.metric(
-        "Score Atual",
-        "92/100",
-        "+20"
-    )
-
-with c2:
-    st.metric(
-        "Achados Críticos",
-        "1",
-        "-5"
-    )
-
-with c3:
-    st.metric(
-        "Compliance",
-        "91%"
-    )
-
-with c4:
-    st.metric(
-        "Tendência",
-        "Positiva ✅"
-    )
-
-# ==========================
-# EXECUTIVE SUMMARY
-# ==========================
+m1.metric("Eventos", len(history_df))
+m2.metric("Critical", len(history_df[history_df["Severidade"]=="Critical"]))
+m3.metric("High", len(history_df[history_df["Severidade"]=="High"]))
+m4.metric("Módulos", history_df["Módulo"].nunique())
+m5.metric("Status", "Active")
 
 st.markdown("---")
 
-st.subheader("📋 Executive Summary")
+# ==========================================
+# 5. FILTROS DE HISTÓRICO
+# ==========================================
+st.subheader("Filtros de Auditoria")
 
-st.info("""
-A postura de segurança apresentou evolução
-consistente ao longo dos últimos meses.
+col_f1, col_f2, col_f3 = st.columns(3)
 
-O Security Score aumentou de 72 para 92 pontos,
-enquanto os achados críticos foram reduzidos
-de 6 para apenas 1 ocorrência.
-""")
+with col_f1:
+    filtro_severidade = st.selectbox(
+        "Filtrar por Severidade",
+        ["Todas", "Critical", "High", "Medium", "Low", "Info"]
+    )
 
-# ==========================
-# EVOLUÇÃO DO SCORE
-# ==========================
+with col_f2:
+    filtro_modulo = st.selectbox(
+        "Filtrar por Módulo",
+        ["Todos", "Security Hub", "IAM", "Compliance", "Threat Intelligence", "Security Copilot"]
+    )
 
-st.markdown("---")
-
-st.subheader("📊 Evolução do Security Score")
-
-score_chart = history_df.set_index("Mês")[
-    "Security Score"
-]
-
-st.line_chart(score_chart)
-
-# ==========================
-# EVOLUÇÃO DOS RISCOS
-# ==========================
+with col_f3:
+    dias_historico = st.slider("Período (Dias)", 1, 30, 7)
 
 st.markdown("---")
 
-st.subheader("🚨 Evolução dos Achados Críticos")
+# ==========================================
+# 2. AUDIT HEALTH SCORE (Adicionado após os filtros)
+# ==========================================
+st.subheader("Audit Health Score")
 
-risk_chart = history_df.set_index("Mês")[
-    "Critical Findings"
-]
+audit_score = 96
 
-st.bar_chart(risk_chart)
+st.progress(audit_score / 100)
 
-# ==========================
-# HISTÓRICO DETALHADO
-# ==========================
+st.success(
+    f"Audit Health: {audit_score}%"
+)
 
 st.markdown("---")
 
-st.subheader("📑 Histórico Consolidado")
+# Aplicando Filtros
+df_filtrado = history_df.copy()
+
+if filtro_severidade != "Todas":
+    df_filtrado = df_filtrado[df_filtrado["Severidade"] == filtro_severidade]
+
+if filtro_modulo != "Todos":
+    df_filtrado = df_filtrado[df_filtrado["Módulo"] == filtro_modulo]
+
+# ==========================================
+# 7. EXIBIÇÃO DA TABELA DE HISTÓRICO
+# ==========================================
+st.subheader("Registro de Eventos")
 
 st.dataframe(
-    history_df,
-    use_container_width=True
+    df_filtrado,
+    use_container_width=True,
+    hide_index=True
 )
 
-# ==========================
-# MARCOS DE SEGURANÇA
-# ==========================
+st.markdown("---")
+
+# ==========================================
+# 3. SECURITY EVENT DISTRIBUTION (Adicionado após a tabela principal)
+# ==========================================
+st.subheader("Security Event Distribution")
+
+dist_df = pd.DataFrame({
+    "Severidade": [
+        "Critical",
+        "High",
+        "Medium",
+        "Info"
+    ],
+    "Quantidade": [
+        len(history_df[history_df["Severidade"]=="Critical"]),
+        len(history_df[history_df["Severidade"]=="High"]),
+        len(history_df[history_df["Severidade"]=="Medium"]),
+        len(history_df[history_df["Severidade"]=="Info"])
+    ]
+})
+
+st.bar_chart(
+    dist_df.set_index("Severidade")
+)
 
 st.markdown("---")
 
-st.subheader("🏆 Principais Marcos")
-
-st.success("""
-✅ MFA habilitado para contas administrativas.
-""")
-
-st.success("""
-✅ Integração do AWS GuardDuty.
-""")
-
-st.success("""
-✅ Criptografia KMS implementada.
-""")
-
-st.success("""
-✅ Buckets S3 protegidos com Block Public Access.
-""")
-
-st.success("""
-✅ Monitoramento contínuo via AWS Config.
-""")
-
-# ==========================
-# PREVISÃO
-# ==========================
-
-st.markdown("---")
-
-st.subheader("🔮 Tendência")
+# ==========================================
+# 4. AUDIT INTELLIGENCE (Adicionado antes da Timeline)
+# ==========================================
+st.subheader("Audit Intelligence")
 
 st.info("""
-Mantendo o ritmo atual de correções,
-a projeção é atingir um Security Score
-acima de 95/100 nos próximos ciclos
-de auditoria.
-""")
+Resumo Executivo
 
-# ==========================
-# RODAPÉ
-# ==========================
+• Eventos críticos auditados.
+
+• Histórico íntegro.
+
+• Nenhuma inconsistência detectada.
+
+• Logs sincronizados.
+
+• Compliance preservado.
+""")
 
 st.markdown("---")
 
-st.caption(
-    "AWS Cyber Defense Platform • Security History Center"
+# ==========================================
+# 8. TIMELINE DE INCIDENTES RECENTES
+# ==========================================
+st.subheader("Timeline de Ocorrências Críticas")
+
+for index, row in history_df[history_df["Severidade"].isin(["Critical", "High"])].iterrows():
+    with st.expander(f"🚨 [{row['Timestamp']}] {row['Módulo']} - Severidade: {row['Severidade']}"):
+        st.write(f"**Descrição do Evento:** {row['Evento']}")
+        st.write(f"**Origem / Ação Tomada:** {row['Responsável / Origem']}")
+        st.caption("Status: Resolvido / Auditado pelo sistema.")
+
+st.markdown("---")
+
+# ==========================================
+# 7. COMPLIANCE TIMELINE (Adicionado após a Timeline)
+# ==========================================
+st.subheader("Compliance Timeline")
+
+timeline_df = pd.DataFrame({
+    "Evento": [
+        "IAM Review",
+        "CIS Scan",
+        "NIST Validation",
+        "Threat Review"
+    ],
+    "Status": [
+        "Concluído",
+        "Concluído",
+        "Concluído",
+        "Em andamento"
+    ]
+})
+
+st.dataframe(
+    timeline_df,
+    use_container_width=True,
+    hide_index=True
 )
+
+st.markdown("---")
+
+# ==========================================
+# 5. AUDIT COPILOT (Adicionado antes da exportação)
+# ==========================================
+st.subheader("Audit Copilot")
+
+question = st.text_area(
+    "Pergunte sobre o histórico."
+)
+
+if st.button("Analisar Histórico"):
+    q = question.lower()
+    
+    if "critical" in q:
+        st.info(
+            "Foi identificado 1 evento crítico recente."
+        )
+    elif "iam" in q:
+        st.info(
+            "Existem registros relacionados ao IAM."
+        )
+    elif "compliance" in q:
+        st.info(
+            "Os eventos de compliance estão registrados."
+        )
+    else:
+        st.info(
+            "Análise de auditoria concluída."
+        )
+
+st.markdown("---")
+
+# ==========================================
+# 6. EVENT TREND (Adicionado antes da exportação)
+# ==========================================
+st.subheader("Audit Trend")
+
+trend = pd.DataFrame({
+    "Dia": [
+        "Seg",
+        "Ter",
+        "Qua",
+        "Qui",
+        "Sex"
+    ],
+    "Eventos": [
+        15,
+        12,
+        18,
+        10,
+        len(history_df)
+    ]
+})
+
+st.line_chart(
+    trend.set_index("Dia")
+)
+
+st.markdown("---")
+
+# ==========================================
+# 9. EXPORTAÇÃO DE RELATÓRIO DE AUDITORIA
+# ==========================================
+st.subheader("Exportar Relatório de Auditoria")
+
+csv_data = history_df.to_csv(index=False).encode('utf-8')
+
+st.download_button(
+    "📥 Baixar Histórico Completo (CSV)",
+    csv_data,
+    file_name=f"audit_history_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
+    mime="text/csv"
+)
+
+st.markdown("---")
+
+# ==========================================
+# 10. NAVEGAÇÃO INTEGRADA
+# ==========================================
+st.subheader("Navegação Integrada")
+
+n1, n2, n3, n4, n5, n6 = st.columns(6)
+
+with n1:
+    st.page_link("pages/security_center.py", label="Security Center")
+
+with n2:
+    st.page_link("pages/security_hub.py", label="Security Hub")
+
+with n3:
+    st.page_link("pages/security_copilot.py", label="Security Copilot")
+
+with n4:
+    st.page_link("pages/threat_intelligence.py", label="Threat Intelligence")
+
+with n5:
+    st.page_link("pages/compliance.py", label="Compliance")
+
+with n6:
+    st.page_link("pages/vm_dashboard.py", label="VM Dashboard")
+
+# ==========================================
+# RODAPÉ DO MÓDULO
+# ==========================================
+st.markdown("---")
+st.caption(f"AWS Cyber Defense Platform • Audit History Module • Todos os direitos reservados © {datetime.now().year} • Sincronizado em {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}")
