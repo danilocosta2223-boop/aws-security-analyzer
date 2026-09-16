@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS Security Analyzer - Relatório Executivo</title>
+    <link rel="stylesheet" href="../reports.css">
+</head>
+<body>
+
+    <div class="report-container">
+        <!-- Botão de Impressão (Oculto na exportação PDF) -->
+        <div class="no-print" style="margin-bottom: 1.5rem; text-align: right;">
+            <button onclick="window.print()" style="padding: 0.6rem 1.2rem; background-color: #6366f1; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.9rem;">
+                🖨️ Exportar PDF / Imprimir
+            </button>
+        </div>
+
+        <!-- Cabeçalho -->
+        <header class="report-header">
+            <div class="report-title">
+                <h1>AWS Security Analyzer</h1>
+                <p>Relatório de Auditoria e Conformidade de Segurança</p>
+            </div>
+            <div class="report-meta">
+                <p><strong>Account ID:</strong> <span id="account-id">Carregando...</span></p>
+                <p><strong>Região:</strong> <span id="account-region">Carregando...</span></p>
+                <p><strong>Usuário IAM:</strong> <span id="account-user">Carregando...</span></p>
+            </div>
+        </header>
+
+        <!-- Score Card -->
+        <section class="score-card">
+            <h3>Security Score Geral</h3>
+            <div class="score-value" id="security-score">--%</div>
+        </section>
+
+        <!-- Resumo de Severidades -->
+        <section class="report-summary-grid">
+            <div class="summary-card critical">
+                <span>Críticos</span>
+                <div class="number" id="count-critical">0</div>
+            </div>
+            <div class="summary-card high">
+                <span>Altos</span>
+                <div class="number" id="count-high">0</div>
+            </div>
+            <div class="summary-card medium">
+                <span>Médios</span>
+                <div class="number" id="count-medium">0</div>
+            </div>
+            <div class="summary-card low">
+                <span>Baixos</span>
+                <div class="number" id="count-low">0</div>
+            </div>
+        </section>
+
+        <!-- Lista de Achados e Recomendações -->
+        <section class="report-section">
+            <h2>Vulnerabilidades Encontradas & Recomendações</h2>
+            <div id="findings-container">
+                <p style="color: var(--text-secondary);">Carregando achados da auditoria...</p>
+            </div>
+        </section>
+
+        <!-- Rodapé -->
+        <footer class="report-footer">
+            <p><strong>AWS Security Analyzer</strong></p>
+            <p>Relatório gerado em <span id="report-date"></span></p>
+            <p>Danilo Rafael da Silva Costa</p>
+        </footer>
+    </div>
+
+    <script src="../reports.js"></script>
+</body>
+</html>

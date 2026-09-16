@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS Security Analyzer - Dashboard</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <!-- Chart.js para o gráfico de distribuição de severidade -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <!-- Header com status de atualização e ações -->
+    <header class="page-header">
+        <div class="header-content">
+            <h1>AWS Security Analyzer</h1>
+            <p>Painel Geral de Conformidade e Postura de Segurança AWS</p>
+        </div>
+        <div class="header-actions">
+            <span id="last-update" class="header-status">Última atualização: --</span>
+            <button id="refresh-btn" class="btn btn-primary">Nova Auditoria</button>
+            <button id="export-report-btn" class="btn btn-secondary">Exportar PDF</button>
+        </div>
+    </header>
+
+    <div class="app-layout">
+        <!-- Sidebar / Links Rápidos -->
+        <aside class="sidebar">
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active">Dashboard</a>
+                <a href="../reports/index.html" class="nav-item">Relatórios</a>
+                <a href="#" class="nav-item">Configurações</a>
+                <a href="/api/dashboard" target="_blank" class="nav-item">API (JSON)</a>
+            </nav>
+        </aside>
+
+        <!-- Conteúdo Principal -->
+        <main class="dashboard-grid">
+
+            <!-- 1. Card de Security Score Visual em Destaque -->
+            <section class="card score-card">
+                <h3>Security Score</h3>
+                <div class="score-container">
+                    <div id="security-score-circle" class="score-circle">
+                        <span id="score-value">--%</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. Card de Contexto AWS -->
+            <section class="card account-card">
+                <h3>Contexto AWS</h3>
+                <div class="account-info">
+                    <p><strong>Conta:</strong> <span id="account-id">--</span></p>
+                    <p><strong>Região:</strong> <span id="account-region">--</span></p>
+                    <p><strong>Usuário:</strong> <span id="account-user">--</span></p>
+                </div>
+            </section>
+
+            <!-- 3. Card de Resumo Executivo -->
+            <section class="card executive-card">
+                <h3>Resumo Executivo</h3>
+                <div id="executive-summary" class="summary-info">
+                    <p>Aguardando análise de postura de segurança...</p>
+                </div>
+            </section>
+
+            <!-- 4. Card de Alertas Prioritários / Críticos (Destaque Topo) -->
+            <section class="card priority-alerts full-width">
+                <h3>Alertas Prioritários</h3>
+                <div id="critical-alerts" class="alerts-container">
+                    <p class="loading-text">Verificando alertas de alta severidade...</p>
+                </div>
+            </section>
+
+            <!-- 5. Card de Estatísticas Gerais -->
+            <section class="card stats-card">
+                <h3>Estatísticas Gerais</h3>
+                <div id="stats-container" class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-label">Total de Achados</span>
+                        <span id="stat-findings" class="stat-value">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Recursos Analisados</span>
+                        <span id="stat-resources" class="stat-value">0</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 6. Gráfico de Severidade (Chart.js) -->
+            <section class="card chart-card">
+                <h3>Distribuição dos Achados</h3>
+                <div class="chart-wrapper">
+                    <canvas id="severity-chart"></canvas>
+                </div>
+            </section>
+
+            <!-- 7. Tabela / Lista de Achados Detalhados -->
+            <section class="card findings-card full-width">
+                <h3>Achados de Segurança Detalhados</h3>
+                <div id="findings-container" class="findings-list">
+                    <p class="loading-text">Carregando achados de segurança...</p>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script src="dashboard.js"></script>
+</body>
+</html>

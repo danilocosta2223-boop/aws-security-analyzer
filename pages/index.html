@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS Security Analyzer v2.0</title>
+    <!-- Bootstrap CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome para Ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --aws-dark: #232f3e;
+            --aws-orange: #ff9900;
+            --aws-bg: #f8f9fa;
+        }
+        body {
+            background-color: var(--aws-bg);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .sidebar {
+            min-height: 100vh;
+            background-color: var(--aws-dark);
+            color: #fff;
+        }
+        .sidebar a {
+            color: #d5dbdb;
+            text-decoration: none;
+            padding: 12px 20px;
+            display: block;
+            transition: all 0.3s;
+        }
+        .sidebar a:hover, .sidebar a.active {
+            background-color: #37475a;
+            color: var(--aws-orange);
+            border-left: 4px solid var(--aws-orange);
+        }
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--aws-orange) !important;
+        }
+        .card-metric {
+            border-top: 4px solid var(--aws-orange);
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar de Navegação -->
+            <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block sidebar collapse p-0">
+                <div class="position-sticky pt-3">
+                    <div class="text-center mb-4 px-3">
+                        <h4 class="text-warning"><i class="fas fa-shield-alt"></i> AWS Security</h4>
+                        <small class="text-muted">Analyzer v2.0</small>
+                    </div>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#" onclick="loadSection('dashboard')">
+                                <i class="fas fa-tachometer-alt me-2"></i> Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" onclick="loadSection('aws')">
+                                <i class="fab fa-aws me-2"></i> AWS Management
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" onclick="loadSection('security')">
+                                <i class="fas fa-lock me-2"></i> Security Center
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" onclick="loadSection('reports')">
+                                <i class="fas fa-file-alt me-2"></i> Executive Reports
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" onclick="loadSection('labs')">
+                                <i class="fas fa-flask me-2"></i> Labs & Tests
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" onclick="loadSection('settings')">
+                                <i class="fas fa-cog me-2"></i> Settings
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Conteúdo Principal -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2">Security Posture Dashboard</h1>
+                    <div class="btn-toolbar mb-2 mb-md-0">
+                        <div class="btn-group me-2">
+                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="runScan()">
+                                <i class="fas fa-sync-alt me-1"></i> Executar Scan
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-primary" onclick="downloadReport()">
+                                <i class="fas fa-download me-1"></i> Exportar PDF
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Container Dinâmico da SPA -->
+                <div id="app-content">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle me-2"></i> Bem-vindo ao motor de auditoria AWS Security Analyzer. Carregando métricas...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Scripts JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function loadSection(section) {
+            console.log("Carregando módulo:", section);
+            // Lógica do frontend SPA
+        }
+        function runScan() {
+            alert("Varredura de segurança iniciada...");
+        }
+        function downloadReport() {
+            window.location.href = "/app/report/download";
+        }
+    </script>
+</body>
+</html>

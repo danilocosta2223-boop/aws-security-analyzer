@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AWS Security Analyzer</title>
+  
+  <!-- Fonte Inter + Ícones FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+
+  <div class="app-layout">
+    
+    <!-- 1. Navegação Lateral (Sidebar) -->
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <i class="fa-brands fa-aws"></i>
+        <span>SecAnalyzer</span>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="#" class="nav-item active"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+        <a href="#" class="nav-item"><i class="fa-solid fa-users"></i> IAM</a>
+        <a href="#" class="nav-item"><i class="fa-solid fa-box-archive"></i> S3</a>
+        <a href="#" class="nav-item"><i class="fa-solid fa-server"></i> EC2</a>
+        <a href="#" class="nav-item"><i class="fa-solid fa-shield-halved"></i> Achados</a>
+        <a href="#" class="nav-item"><i class="fa-solid fa-gear"></i> Configurações</a>
+      </nav>
+    </aside>
+
+    <!-- ÁREA PRINCIPAL -->
+    <div class="main-wrapper">
+      
+      <!-- 2. Header Profissional -->
+      <header class="header">
+        <div class="logo">
+          <div>
+            <h1>AWS Security Analyzer</h1>
+            <p class="subtitle">Monitoramento e Análise de Segurança AWS</p>
+          </div>
+        </div>
+        
+        <div class="header-actions">
+          <span id="last-update" class="last-update">Última atualização: --</span>
+          <!-- Botão sem onclick inline: desacoplado para carregar via eventListener -->
+          <button id="refresh-btn" class="btn-refresh">
+            <i class="fa-solid fa-rotate-right"></i> Atualizar
+          </button>
+        </div>
+      </header>
+
+      <!-- 3. Grid Principal -->
+      <main class="dashboard-grid">
+        
+        <!-- Card 1: Security Score + Status Geral -->
+        <section class="card score-card">
+          <h3>Score de Segurança</h3>
+          <div id="score" class="score-container">
+            <span class="loading-spinner"></span>
+          </div>
+          <div id="security-status" class="security-status-badge">
+            Status: Carregando...
+          </div>
+        </section>
+
+        <!-- Card 2: Resumo Executivo -->
+        <section class="card summary-card">
+          <h3>Resumo Executivo</h3>
+          <div id="executive-summary" class="summary-content">
+            <p class="loading-text">Aguardando análise...</p>
+          </div>
+        </section>
+
+        <!-- Card 3: Distribuição de Riscos (Severidades) -->
+        <section class="card severity-card">
+          <h3>Distribuição de Riscos</h3>
+          <div id="severity-summary" class="severity-grid">
+            <div class="severity-pill critical">Crítico: <span id="sev-critical-count">0</span></div>
+            <div class="severity-pill high">Alto: <span id="sev-high-count">0</span></div>
+            <div class="severity-pill medium">Médio: <span id="sev-medium-count">0</span></div>
+            <div class="severity-pill low">Baixo: <span id="sev-low-count">0</span></div>
+          </div>
+        </section>
+
+        <!-- Card 4: Informações da Conta AWS / Ambiente -->
+        <section class="card account-card">
+          <h3>Contexto do Ambiente</h3>
+          <div id="account-info" class="account-info-grid">
+            <p><strong>Conta:</strong> <span id="acc-id">--</span></p>
+            <p><strong>Região:</strong> <span id="acc-region">us-east-1</span></p>
+            <p><strong>IAM User:</strong> <span id="acc-user">--</span></p>
+          </div>
+        </section>
+
+        <!-- Card Group: Visão Geral de Recursos AWS -->
+        <section class="card-group">
+          <div class="resource-card">
+            <div class="icon-box iam">
+              <i class="fa-solid fa-users"></i>
+            </div>
+            <div class="info">
+              <span class="label">IAM Users</span>
+              <span id="iam-users-count" class="value">--</span>
+              <span class="status">Recursos AWS</span>
+            </div>
+          </div>
+
+          <div class="resource-card">
+            <div class="icon-box s3">
+              <i class="fa-solid fa-box-archive"></i>
+            </div>
+            <div class="info">
+              <span class="label">S3 Buckets</span>
+              <span id="s3-buckets-count" class="value">--</span>
+              <span class="status">Recursos AWS</span>
+            </div>
+          </div>
+
+          <div class="resource-card">
+            <div class="icon-box ec2">
+              <i class="fa-solid fa-server"></i>
+            </div>
+            <div class="info">
+              <span class="label">EC2 Instances</span>
+              <span id="ec2-instances-count" class="value">--</span>
+              <span class="status">Recursos AWS</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Card 5: Lista de Achados (Findings) -->
+        <section class="card findings-card">
+          <div class="card-header">
+            <h3>Achados de Segurança</h3>
+            <span id="findings-count" class="findings-badge">0 achados</span>
+          </div>
+          <div id="findings" class="findings-list">
+            <p class="loading-text">Carregando achados...</p>
+          </div>
+        </section>
+
+      </main>
+
+      <!-- 4. Footer Profissional -->
+      <footer class="footer">
+        <p>AWS Security Analyzer v1.0</p>
+        <p>Desenvolvido por Danilo Rafael da Silva Costa</p>
+      </footer>
+
+    </div> <!-- /.main-wrapper -->
+  </div> <!-- /.app-layout -->
+
+  <script src="dashboard.js"></script>
+</body>
+</html>

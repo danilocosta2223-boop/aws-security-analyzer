@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AWS Security Analyzer — SecOps & Auditing Platform</title>
+
+  <!-- Google Fonts & Font Awesome Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    /* RESET & VARS */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-primary: #0b0f19;
+      --bg-secondary: #111827;
+      --bg-card: #1f2937;
+      --border-color: #374151;
+      --text-primary: #f9fafb;
+      --text-secondary: #9ca3af;
+      --text-muted: #6b7280;
+      --accent-blue: #3b82f6;
+      --accent-blue-hover: #2563eb;
+      --accent-cyan: #06b6d4;
+      --color-success: #10b981;
+      --radius-lg: 16px;
+      --radius-md: 10px;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* EFETO GLOW BACKGROUND */
+    .bg-glow {
+      position: absolute;
+      top: -150px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, rgba(11, 15, 25, 0) 70%);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* NAVBAR */
+    .navbar {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 24px 48px;
+      border-bottom: 1px solid rgba(55, 65, 81, 0.5);
+      backdrop-filter: blur(10px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .brand i {
+      color: var(--accent-blue);
+      font-size: 1.5rem;
+    }
+
+    .status-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background-color: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: var(--color-success);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background-color: var(--color-success);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--color-success);
+    }
+
+    /* HERO SECTION */
+    .hero {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      max-width: 900px;
+      margin: 60px auto 40px auto;
+      padding: 0 24px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      padding: 6px 16px;
+      border-radius: 30px;
+      font-size: 0.85rem;
+      color: var(--accent-cyan);
+      margin-bottom: 24px;
+      font-weight: 500;
+    }
+
+    .hero h1 {
+      font-size: 3.5rem;
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+      margin-bottom: 20px;
+      background: linear-gradient(180deg, #ffffff 0%, #9ca3af 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      font-size: 1.15rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 36px;
+      max-width: 680px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* BOTOES DE AÇÃO */
+    .cta-group {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-blue-hover) 100%);
+      color: #ffffff;
+      text-decoration: none;
+      padding: 16px 32px;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      font-size: 1rem;
+      box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4);
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 24px rgba(59, 130, 246, 0.6);
+    }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background-color: var(--bg-secondary);
+      color: var(--text-primary);
+      border: 1px solid var(--border-color);
+      text-decoration: none;
+      padding: 16px 24px;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      font-size: 1rem;
+      transition: all 0.2s ease;
+    }
+
+    .btn-secondary:hover {
+      background-color: var(--bg-card);
+      border-color: var(--text-secondary);
+    }
+
+    /* GRID DE RECURSOS */
+    .features-grid {
+      position: relative;
+      z-index: 10;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      max-width: 1050px;
+      margin: 40px auto 60px auto;
+      padding: 0 24px;
+    }
+
+    .feature-card {
+      background-color: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      transition: all 0.2s ease;
+    }
+
+    .feature-card:hover {
+      border-color: var(--accent-blue);
+      transform: translateY(-3px);
+    }
+
+    .feature-icon {
+      width: 48px;
+      height: 48px;
+      background-color: rgba(59, 130, 246, 0.1);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent-blue);
+      font-size: 1.3rem;
+      margin-bottom: 20px;
+    }
+
+    .feature-card h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .feature-card p {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* FOOTER */
+    .footer {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      padding: 24px;
+      border-top: 1px solid var(--border-color);
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      background-color: var(--bg-secondary);
+    }
+
+    /* RESPONSIVIDADE */
+    @media (max-width: 768px) {
+      .navbar {
+        padding: 16px 20px;
+      }
+      .hero h1 {
+        font-size: 2.3rem;
+      }
+      .cta-group {
+        flex-direction: column;
+        width: 100%;
+      }
+      .btn-primary, .btn-secondary {
+        width: 100%;
+        justify-content: center;
+      }
+      .features-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- BRILHO DE FUNDO -->
+  <div class="bg-glow"></div>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="brand">
+      <i class="fa-solid fa-shield-halved"></i>
+      <span>AWS Security Analyzer</span>
+    </div>
+    <div class="status-badge">
+      <span class="status-dot"></span>
+      <span>API Online</span>
+    </div>
+  </nav>
+
+  <!-- HERO SECTION -->
+  <section class="hero">
+    <div class="hero-badge">
+      <i class="fa-solid fa-bolt"></i> SecOps Framework v1.0
+    </div>
+
+    <h1>Plataforma de Auditoria & Segurança Cloud AWS</h1>
+
+    <p>
+      Monitore a postura de segurança da sua infraestrutura AWS em tempo real. 
+      Identifique vulnerabilidades em IAM, S3 e EC2 com cálculo dinâmico de 
+      <strong>Security Score</strong> e geração automatizada de relatórios.
+    </p>
+
+    <div class="cta-group">
+      <a href="dashboard/dashboard.html" class="btn-primary">
+        <span>Acessar Dashboard</span>
+        <i class="fa-solid fa-arrow-right"></i>
+      </a>
+      <a href="http://127.0.0.1:5000/api/dashboard" target="_blank" class="btn-secondary">
+        <i class="fa-solid fa-code"></i>
+        <span>Ver Endpoint API</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- CARDS DE RECURSOS DA PLATAFORMA -->
+  <section class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">
+        <i class="fa-solid fa-key"></i>
+      </div>
+      <h3>IAM Governance</h3>
+      <p>Auditoria de contas root, verificação de MFA obrigatório e detecção de credenciais antigas sem rotação.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">
+        <i class="fa-solid fa-box-archive"></i>
+      </div>
+      <h3>Storage & S3 Hardening</h3>
+      <p>Identificação de buckets expostos publicamente e verificação de políticas de criptografia padrão (SSE-S3/KMS).</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">
+        <i class="fa-solid fa-network-wired"></i>
+      </div>
+      <h3>EC2 & VPC Security</h3>
+      <p>Inspeção de Security Groups com portas críticas (22 SSH / 3389 RDP) abertas para a internet e tagging de governança.</p>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <p>AWS Security Analyzer © 2026 — Desenvolvido por <strong>Danilo Rafael da Silva Costa</strong></p>
+  </footer>
+
+</body>
+</html>

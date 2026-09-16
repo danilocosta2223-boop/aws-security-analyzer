@@ -1,0 +1,242 @@
+/* ==========================================================================
+   AWS Security Analyzer - Reports Stylesheet (PDF & Web View)
+   ========================================================================== */
+
+:root {
+    --bg-primary: #0f172a;
+    --bg-card: #1e293b;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --border-color: #334155;
+    
+    --color-critical: #dc2626;
+    --color-high: #ef4444;
+    --color-medium: #f59e0b;
+    --color-low: #3b82f6;
+    --color-success: #10b981;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.6;
+    padding: 2rem;
+}
+
+/* Scrollbar Dark Customizada */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--text-secondary);
+}
+
+/* Container Principal do Relatório */
+.report-container {
+    max-width: 900px;
+    margin: 0 auto;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 2.5rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+/* Cabeçalho do Relatório */
+.report-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.report-title h1 {
+    font-size: 1.8rem;
+    color: var(--text-primary);
+}
+
+.report-title p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.report-meta {
+    text-align: right;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+/* Card do Security Score */
+.score-card {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background-color: rgba(15, 23, 42, 0.6);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+}
+
+.score-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--color-success);
+}
+
+/* Grid do Resumo Executivo */
+.report-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+}
+
+.summary-card {
+    background-color: rgba(15, 23, 42, 0.6);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 1rem;
+    text-align: center;
+}
+
+.summary-card .number {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-top: 0.25rem;
+}
+
+.summary-card.critical .number { color: var(--color-critical); }
+.summary-card.high .number { color: var(--color-high); }
+.summary-card.medium .number { color: var(--color-medium); }
+.summary-card.low .number { color: var(--color-low); }
+
+/* Seção de Achados (Findings) */
+.report-section {
+    margin-bottom: 2rem;
+}
+
+.report-section h2 {
+    font-size: 1.3rem;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.5rem;
+}
+
+.report-finding-item {
+    background-color: rgba(15, 23, 42, 0.4);
+    border: 1px solid var(--border-color);
+    border-left: 5px solid var(--border-color);
+    border-radius: 4px;
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+    page-break-inside: avoid;
+    transition: transform .2s ease, border-color .2s ease;
+}
+
+.report-finding-item:hover {
+    transform: translateY(-2px);
+    border-color: var(--text-secondary);
+}
+
+.report-finding-item.severity-CRITICAL { border-left-color: var(--color-critical); }
+.report-finding-item.severity-HIGH { border-left-color: var(--color-high); }
+.report-finding-item.severity-MEDIUM { border-left-color: var(--color-medium); }
+.report-finding-item.severity-LOW { border-left-color: var(--color-low); }
+
+.finding-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.badge {
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.badge.CRITICAL { background-color: var(--color-critical); color: #fff; }
+.badge.HIGH { background-color: var(--color-high); color: #fff; }
+.badge.MEDIUM { background-color: var(--color-medium); color: #000; }
+.badge.LOW { background-color: var(--color-low); color: #fff; }
+
+.finding-details {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-top: 0.5rem;
+}
+
+.finding-remediation {
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px dashed var(--border-color);
+    font-size: 0.85rem;
+    color: var(--text-primary);
+}
+
+/* Rodapé do Relatório */
+.report-footer {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+}
+
+/* Rules de Impressão (PDF) */
+@media print {
+    body {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+        padding: 0;
+    }
+
+    .report-container {
+        max-width: 100%;
+        border: none;
+        box-shadow: none;
+        background-color: #ffffff !important;
+        padding: 0;
+    }
+
+    .score-card, .summary-card, .report-finding-item {
+        background-color: #f8fafc !important;
+        border: 1px solid #cbd5e1 !important;
+        color: #000000 !important;
+    }
+
+    .report-title h1, .report-section h2, .finding-title-row h3, .score-value {
+        color: #000000 !important;
+    }
+
+    .report-title p, .report-meta, .finding-details, .finding-remediation, .report-footer {
+        color: #334155 !important;
+    }
+
+    .no-print {
+        display: none !important;
+    }
+}
