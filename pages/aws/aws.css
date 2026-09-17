@@ -1,0 +1,155 @@
+/* ================================================================= */
+/* AWS SECURITY ANALYZER - DESIGN SYSTEM (AWS.CSS)                   */
+/* ================================================================= */
+
+:root {
+    --aws-bg: #0b0f19;
+    --aws-dark-blue: #111827;
+    --aws-card-bg: #1f2937;
+    --aws-card-border: #374151;
+    --aws-accent: #ff9900;
+    --aws-accent-glow: rgba(255, 153, 0, 0.25);
+    --aws-text-main: #f9fafb;
+    --aws-text-muted: #9ca3af;
+    --success-color: #10b981;
+    --danger-color: #ef4444;
+    --warning-color: #f59e0b;
+    --info-color: #3b82f6;
+}
+
+body {
+    background-color: var(--aws-bg);
+    color: var(--aws-text-main);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    overflow-x: hidden;
+}
+
+/* Scrollbar personalizada */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-track {
+    background: var(--aws-dark-blue);
+}
+::-webkit-scrollbar-thumb {
+    background: var(--aws-card-border);
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--aws-accent);
+}
+
+/* Cards com efeito de elevação e transição fluida */
+.card-custom {
+    background: linear-gradient(135deg, var(--aws-card-bg) 0%, #17202e 100%);
+    border: 1px solid var(--aws-card-border);
+    border-radius: 12px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-custom:hover {
+    transform: translateY(-4px);
+    border-color: rgba(255, 153, 0, 0.4);
+    box-shadow: 0 20px 30px -10px var(--aws-accent-glow);
+}
+
+/* Inputs e Formulários */
+.form-control, .form-select {
+    background-color: var(--aws-dark-blue) !important;
+    border: 1px solid var(--aws-card-border) !important;
+    color: var(--aws-text-main) !important;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    transition: all 0.2s ease;
+}
+
+.form-control:focus {
+    border-color: var(--aws-accent) !important;
+    box-shadow: 0 0 0 3px var(--aws-accent-glow) !important;
+}
+
+/* Botões Customizados */
+.btn-aws-primary {
+    background: linear-gradient(135deg, #ff9900 0%, #e68a00 100%);
+    color: #0b0f19;
+    font-weight: 700;
+    border: none;
+    border-radius: 8px;
+    padding: 0.65rem 1.25rem;
+    box-shadow: 0 4px 12px rgba(255, 153, 0, 0.3);
+    transition: all 0.2s ease;
+}
+
+.btn-aws-primary:hover {
+    background: linear-gradient(135deg, #ffab1a, #ff9900);
+    color: #0b0f19;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(255, 153, 0, 0.5);
+}
+
+.btn-aws-outline {
+    background: transparent;
+    border: 1px solid var(--aws-card-border);
+    color: var(--aws-text-main);
+    border-radius: 8px;
+    padding: 0.65rem 1.25rem;
+    transition: all 0.2s ease;
+}
+
+.btn-aws-outline:hover {
+    background-color: var(--aws-card-border);
+    color: var(--aws-accent);
+    border-color: var(--aws-accent);
+}
+
+/* Badges de Severidade com Cores Modernas */
+.badge-critical {
+    background-color: rgba(239, 68, 68, 0.2);
+    color: #f87171;
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    padding: 0.35em 0.65em;
+    font-weight: 600;
+    border-radius: 6px;
+}
+
+.badge-high {
+    background-color: rgba(245, 158, 11, 0.2);
+    color: #fbbf24;
+    border: 1px solid rgba(245, 158, 11, 0.4);
+    padding: 0.35em 0.65em;
+    font-weight: 600;
+    border-radius: 6px;
+}
+
+.badge-medium {
+    background-color: rgba(59, 130, 246, 0.2);
+    color: #60a5fa;
+    border: 1px solid rgba(59, 130, 246, 0.4);
+    padding: 0.35em 0.65em;
+    font-weight: 600;
+    border-radius: 6px;
+}
+
+.badge-secure {
+    background-color: rgba(16, 185, 129, 0.2);
+    color: #34d399;
+    border: 1px solid rgba(16, 185, 129, 0.4);
+    padding: 0.35em 0.65em;
+    font-weight: 600;
+    border-radius: 6px;
+}
+
+/* Caixa de Resultado / Output */
+.result-box {
+    background-color: #0c1017;
+    border: 1px solid var(--aws-card-border);
+    border-radius: 8px;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.85rem;
+    color: #34d399;
+    padding: 1rem;
+    max-height: 250px;
+    overflow-y: auto;
+}
