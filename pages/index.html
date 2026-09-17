@@ -3,137 +3,516 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AWS Security Analyzer v2.0</title>
-    <!-- Bootstrap CSS CDN -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- FontAwesome para Ícones -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>AWS Security Analyzer | Enterprise Cloud Security Platform</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            --aws-dark: #232f3e;
-            --aws-orange: #ff9900;
-            --aws-bg: #f8f9fa;
+            --aws-dark: #1b2430;
+            --aws-accent: #ff9900;
+            --aws-dark-blue: #131a22;
+            --aws-card-bg: #232f3e;
+            --aws-bg: #0f141c;
         }
         body {
+            font-family: 'Inter', sans-serif;
             background-color: var(--aws-bg);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        .sidebar {
-            min-height: 100vh;
-            background-color: var(--aws-dark);
-            color: #fff;
-        }
-        .sidebar a {
-            color: #d5dbdb;
-            text-decoration: none;
-            padding: 12px 20px;
-            display: block;
-            transition: all 0.3s;
-        }
-        .sidebar a:hover, .sidebar a.active {
-            background-color: #37475a;
-            color: var(--aws-orange);
-            border-left: 4px solid var(--aws-orange);
+            color: #f8f9fa;
         }
         .navbar-brand {
             font-weight: 700;
-            color: var(--aws-orange) !important;
+            letter-spacing: 0.5px;
+            color: var(--aws-accent) !important;
+            transition: color 0.3s ease;
         }
-        .card-metric {
-            border-top: 4px solid var(--aws-orange);
-            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        .sidebar {
+            background-color: var(--aws-dark-blue);
+            min-height: calc(100vh - 56px);
+            border-right: 1px solid #2f3e46;
+        }
+        .sidebar .nav-link {
+            color: #adb5bd;
+            padding: 12px 20px;
+            border-radius: 6px;
+            margin-bottom: 5px;
+            transition: all 0.2s ease;
+        }
+        .sidebar .nav-link:hover, .sidebar .nav-link.active {
+            color: #ffffff;
+            background-color: var(--aws-card-bg);
+            border-left: 4px solid var(--aws-accent);
+        }
+        /* Melhoria: Animação e transição suave nos cards */
+        .card-custom {
+            background-color: var(--aws-card-bg);
+            border: 1px solid #374151;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card-custom:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+        }
+        .badge-critical { background-color: #dc3545; color: white; }
+        .badge-high { background-color: #fd7e14; color: white; }
+        .badge-medium { background-color: #ffc107; color: #000; }
+        .badge-secure { background-color: #198754; color: white; }
+        
+        /* Ocultar seções SPA dinamicamente */
+        .spa-section {
+            display: none;
+        }
+        .spa-section.active {
+            display: block;
+        }
+
+        /* Estilo do Terminal Interativo */
+        .terminal-box {
+            background-color: #0c1017;
+            border: 1px solid #374151;
+            border-radius: 6px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            color: #33ff66;
+            height: 220px;
+            overflow-y: auto;
+            padding: 15px;
+        }
+        .terminal-prompt {
+            color: #60a5fa;
         }
     </style>
 </head>
 <body>
 
+    <!-- Navbar Superior Corporativa -->
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: var(--aws-dark-blue); border-bottom: 1px solid #374151;">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand" href="#" onclick="switchTab('dashboard')">
+                <i class="fa-brands fa-aws me-2" style="color: var(--aws-accent);"></i> AWS Security Analyzer <span class="badge bg-secondary fs-6 ms-2">v2.5</span>
+            </a>
+            
+            <div class="d-flex align-items-center">
+                <!-- Seletor de Tema / Cores Dinâmico -->
+                <div class="dropdown me-3">
+                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle text-light" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fa-solid fa-palette me-1" style="color: var(--aws-accent);"></i> Tema
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-dark shadow">
+                        <li><a class="dropdown-item d-flex align-items-center" href="#" onclick="setTheme('aws')"><span class="rounded-circle d-inline-block me-2" style="width:12px; height:12px; background:#ff9900;"></span> Laranja AWS</a></li>
+                        <li><a class="dropdown-item d-flex align-items-center" href="#" onclick="setTheme('cyber')"><span class="rounded-circle d-inline-block me-2" style="width:12px; height:12px; background:#00ff66;"></span> Cyber Green</a></li>
+                        <li><a class="dropdown-item d-flex align-items-center" href="#" onclick="setTheme('ocean')"><span class="rounded-circle d-inline-block me-2" style="width:12px; height:12px; background:#00d2ff;"></span> Ocean Blue</a></li>
+                        <li><a class="dropdown-item d-flex align-items-center" href="#" onclick="setTheme('ruby')"><span class="rounded-circle d-inline-block me-2" style="width:12px; height:12px; background:#f43f5e;"></span> Ruby Red</a></li>
+                    </ul>
+                </div>
+
+                <span class="text-muted small me-3 d-none d-md-inline"><i class="fa-solid fa-shield-halved text-success me-1"></i> Region: <strong id="lbl-region">us-east-1</strong></span>
+                <button onclick="runScan()" class="btn btn-sm fw-semibold text-dark" style="background-color: var(--aws-accent); border: none;">
+                    <i class="fa-solid fa-rotate me-1"></i> Executar Scan
+                </button>
+            </div>
+        </div>
+    </nav>
+
     <div class="container-fluid">
         <div class="row">
             <!-- Sidebar de Navegação -->
-            <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block sidebar collapse p-0">
-                <div class="position-sticky pt-3">
-                    <div class="text-center mb-4 px-3">
-                        <h4 class="text-warning"><i class="fas fa-shield-alt"></i> AWS Security</h4>
-                        <small class="text-muted">Analyzer v2.0</small>
-                    </div>
-                    <ul class="nav flex-column">
-                        <li class="nav-item">
-                            <a class="nav-link active" href="#" onclick="loadSection('dashboard')">
-                                <i class="fas fa-tachometer-alt me-2"></i> Dashboard
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#" onclick="loadSection('aws')">
-                                <i class="fab fa-aws me-2"></i> AWS Management
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#" onclick="loadSection('security')">
-                                <i class="fas fa-lock me-2"></i> Security Center
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#" onclick="loadSection('reports')">
-                                <i class="fas fa-file-alt me-2"></i> Executive Reports
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#" onclick="loadSection('labs')">
-                                <i class="fas fa-flask me-2"></i> Labs & Tests
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#" onclick="loadSection('settings')">
-                                <i class="fas fa-cog me-2"></i> Settings
-                            </a>
-                        </li>
-                    </ul>
+            <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block sidebar collapse px-3 py-4">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#" onclick="switchTab('dashboard')" id="nav-dashboard">
+                            <i class="fa-solid fa-chart-pie me-2"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="switchTab('security')" id="nav-security">
+                            <i class="fa-solid fa-shield-dog me-2"></i> Security Center
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="switchTab('aws')" id="nav-aws">
+                            <i class="fa-solid fa-server me-2"></i> AWS Management
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="switchTab('labs')" id="nav-labs">
+                            <i class="fa-solid fa-flask me-2"></i> Labs & Terminal
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="switchTab('reports')" id="nav-reports">
+                            <i class="fa-solid fa-file-pdf me-2"></i> Executive Reports
+                        </a>
+                    </li>
+                </ul>
+                <hr class="text-secondary my-4">
+                <div class="px-2 text-muted small">
+                    <p class="mb-1">Desenvolvido por:</p>
+                    <strong class="text-light">Danilo Rafael da Silva Costa</strong>
                 </div>
             </nav>
 
-            <!-- Conteúdo Principal -->
+            <!-- Conteúdo Principal Dinâmico (SPA) -->
             <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
-                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                    <h1 class="h2">Security Posture Dashboard</h1>
-                    <div class="btn-toolbar mb-2 mb-md-0">
-                        <div class="btn-group me-2">
-                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="runScan()">
-                                <i class="fas fa-sync-alt me-1"></i> Executar Scan
-                            </button>
-                            <button type="button" class="btn btn-sm btn-outline-primary" onclick="downloadReport()">
-                                <i class="fas fa-download me-1"></i> Exportar PDF
-                            </button>
-                        </div>
-                    </div>
-                </div>
 
-                <!-- Container Dinâmico da SPA -->
-                <div id="app-content">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="alert alert-info">
-                                <i class="fas fa-info-circle me-2"></i> Bem-vindo ao motor de auditoria AWS Security Analyzer. Carregando métricas...
+                <!-- SEÇÃO 1: DASHBOARD -->
+                <section id="section-dashboard" class="spa-section active">
+                    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom border-secondary">
+                        <h1 class="h3 fw-bold"><i class="fa-solid fa-gauge-high me-2" style="color: var(--aws-accent);"></i> Cloud Security Dashboard</h1>
+                        <span class="text-muted small">Última auditoria: <span id="lbl-last-scan">Carregando...</span></span>
+                    </div>
+
+                    <!-- Cards de Métricas Principais -->
+                    <div class="row g-4 mb-4">
+                        <div class="col-xl-3 col-md-6">
+                            <div class="card card-custom p-3 border-start border-4" style="border-left-color: var(--aws-accent) !important;">
+                                <h6 class="text-muted mb-1">Security Score</h6>
+                                <h2 class="fw-bold mb-0" style="color: var(--aws-accent);" id="metric-score">85%</h2>
+                                <small class="text-success"><i class="fa-solid fa-arrow-up me-1"></i> +2% esta semana</small>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-6">
+                            <div class="card card-custom p-3 border-start border-4 border-danger">
+                                <h6 class="text-muted mb-1">Achados Críticos</h6>
+                                <h2 class="fw-bold mb-0 text-danger" id="metric-critical">1</h2>
+                                <small class="text-danger">Ação imediata necessária</small>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-6">
+                            <div class="card card-custom p-3 border-start border-4 border-info">
+                                <h6 class="text-muted mb-1">Recursos Monitorados</h6>
+                                <h2 class="fw-bold mb-0 text-info" id="metric-resources">321</h2>
+                                <small class="text-muted">12 Serviços AWS ativos</small>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-6">
+                            <div class="card card-custom p-3 border-start border-4 border-success">
+                                <h6 class="text-muted mb-1">Conformidade</h6>
+                                <h2 class="fw-bold mb-0 text-success">98%</h2>
+                                <small class="text-success">CIS & AWS Foundations</small>
                             </div>
                         </div>
                     </div>
-                </div>
+
+                    <!-- Linha com Tabela e Novo Gráfico Chart.js -->
+                    <div class="row g-4 mb-4">
+                        <div class="col-lg-8">
+                            <div class="card card-custom p-4 h-100">
+                                <h5 class="fw-bold mb-3"><i class="fa-solid fa-triangle-exclamation me-2" style="color: var(--aws-accent);"></i> Alertas de Postura Recentes</h5>
+                                <div class="table-responsive">
+                                    <table class="table table-dark table-hover align-middle mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th>Severidade</th>
+                                                <th>Título do Alerta</th>
+                                                <th>Recurso Afetado</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="findings-table-body">
+                                            <tr>
+                                                <td><span class="badge badge-critical">CRITICAL</span></td>
+                                                <td>Security Group com porta 22 aberta</td>
+                                                <td><code>sg-012345</code></td>
+                                            </tr>
+                                            <tr>
+                                                <td><span class="badge badge-high">HIGH</span></td>
+                                                <td>MFA Desabilitado em Conta Root</td>
+                                                <td><code>arn:aws:iam::root</code></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Novo Gráfico Chart.js -->
+                        <div class="col-lg-4">
+                            <div class="card card-custom p-4 h-100 d-flex flex-column justify-content-between">
+                                <h5 class="fw-bold mb-3"><i class="fa-solid fa-chart-pie me-2" style="color: var(--aws-accent);"></i> Distribuição de Riscos</h5>
+                                <div style="position: relative; height: 180px;">
+                                    <canvas id="securityChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SEÇÃO 2: SECURITY CENTER -->
+                <section id="section-security" class="spa-section">
+                    <div class="d-flex justify-content-between align-items-center pt-3 pb-2 mb-3 border-bottom border-secondary">
+                        <h1 class="h3 fw-bold"><i class="fa-solid fa-shield-dog me-2" style="color: var(--aws-accent);"></i> Security Center</h1>
+                    </div>
+                    <div class="card card-custom p-4">
+                        <h5 class="fw-bold mb-3">Controles de Conformidade Cloud</h5>
+                        <p class="text-muted">Avaliação contínua dos pilares de segurança da AWS:</p>
+                        <ul class="list-group list-group-flush bg-transparent">
+                            <li class="list-group-item bg-transparent text-light border-secondary d-flex justify-content-between align-items-center">
+                                <span>Autenticação Multifator (MFA) em Contas Root/IAM</span>
+                                <span class="badge bg-success">HABILITADO</span>
+                            </li>
+                            <li class="list-group-item bg-transparent text-light border-secondary d-flex justify-content-between align-items-center">
+                                <span>Políticas de Privilégio Mínimo IAM</span>
+                                <span class="badge bg-warning text-dark">ATENÇÃO</span>
+                            </li>
+                            <li class="list-group-item bg-transparent text-light border-secondary d-flex justify-content-between align-items-center">
+                                <span>Criptografia de Repouso (S3 & RDS)</span>
+                                <span class="badge bg-success">SEGURO</span>
+                            </li>
+                            <li class="list-group-item bg-transparent text-light border-secondary d-flex justify-content-between align-items-center">
+                                <span>Monitoramento de Tráfego e CloudTrail</span>
+                                <span class="badge bg-success">HABILITADO</span>
+                            </li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- SEÇÃO 3: AWS MANAGEMENT -->
+                <section id="section-aws" class="spa-section">
+                    <div class="d-flex justify-content-between align-items-center pt-3 pb-2 mb-3 border-bottom border-secondary">
+                        <h1 class="h3 fw-bold"><i class="fa-solid fa-server me-2" style="color: var(--aws-accent);"></i> AWS Management Center</h1>
+                    </div>
+                    <div class="row g-4" id="aws-services-grid">
+                        <div class="col-md-4">
+                            <div class="card card-custom p-4 text-center">
+                                <i class="fa-brands fa-aws fa-3x mb-3" style="color: var(--aws-accent);"></i>
+                                <h5>EC2 Instances</h5>
+                                <h3 class="fw-bold text-light" id="stat-ec2">14</h3>
+                                <p class="text-muted small mb-0">Instâncias virtuais ativas</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card card-custom p-4 text-center">
+                                <i class="fa-solid fa-database fa-3x text-info mb-3"></i>
+                                <h5>S3 Buckets</h5>
+                                <h3 class="fw-bold text-light" id="stat-s3">5</h3>
+                                <p class="text-muted small mb-0">Repositórios de armazenamento</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card card-custom p-4 text-center">
+                                <i class="fa-solid fa-network-wired fa-3x text-success mb-3"></i>
+                                <h5>VPC & Security Groups</h5>
+                                <h3 class="fw-bold text-light" id="stat-vpc">3</h3>
+                                <p class="text-muted small mb-0">Redes virtuais isoladas</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SEÇÃO 4: LABS & TERMINAL INTERATIVO -->
+                <section id="section-labs" class="spa-section">
+                    <div class="d-flex justify-content-between align-items-center pt-3 pb-2 mb-3 border-bottom border-secondary">
+                        <h1 class="h3 fw-bold"><i class="fa-solid fa-flask me-2" style="color: var(--aws-accent);"></i> Labs & Live Terminal</h1>
+                    </div>
+                    <div class="row g-4">
+                        <div class="col-lg-6">
+                            <div class="card card-custom p-4 h-100">
+                                <h5 class="fw-bold mb-3">Simulações de Auditoria</h5>
+                                <p class="text-muted">Selecione uma simulação para validar falhas e regras de segurança:</p>
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-outline-warning text-start" onclick="runTerminalCommand('iam')"><i class="fa-solid fa-terminal me-2"></i> Executar Scan de IAM Policies</button>
+                                    <button class="btn btn-outline-warning text-start" onclick="runTerminalCommand('s3')"><i class="fa-solid fa-terminal me-2"></i> Verificar Exposição de S3 Buckets</button>
+                                    <button class="btn btn-outline-warning text-start" onclick="runTerminalCommand('sg')"><i class="fa-solid fa-terminal me-2"></i> Auditoria de Security Groups (Portas abertas)</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="card card-custom p-4 h-100">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h5 class="fw-bold mb-0"><i class="fa-solid fa-code me-2"></i> Terminal de Logs</h5>
+                                    <button class="btn btn-sm btn-outline-secondary text-light" onclick="clearTerminal()"><i class="fa-solid fa-trash-can"></i></button>
+                                </div>
+                                <p class="text-muted small">Saída em tempo real dos agentes de auditoria:</p>
+                                <div id="terminal-output" class="terminal-box">
+                                    <span class="terminal-prompt">aws-analyzer@sec-ops:~$</span> Sistema pronto. Aguardando comando...<br>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SEÇÃO 5: EXECUTIVE REPORTS -->
+                <section id="section-reports" class="spa-section">
+                    <div class="d-flex justify-content-between align-items-center pt-3 pb-2 mb-3 border-bottom border-secondary">
+                        <h1 class="h3 fw-bold"><i class="fa-solid fa-file-pdf me-2" style="color: var(--aws-accent);"></i> Executive Reports</h1>
+                    </div>
+                    <div class="card card-custom p-4 text-center py-5">
+                        <i class="fa-solid fa-file-contract fa-4x mb-3" style="color: var(--aws-accent);"></i>
+                        <h4 class="fw-bold">Relatório Executivo de Postura de Segurança</h4>
+                        <p class="text-muted col-md-8 mx-auto">Gere um documento corporativo completo em formato PDF contendo métricas avançadas, achados críticos e plano de ação estruturado para diretores e engenheiros.</p>
+                        <a href="/app/report/download" class="btn fw-semibold px-4 py-2 mx-auto text-dark" style="background-color: var(--aws-accent); border: none;">
+                            <i class="fa-solid fa-download me-2"></i> Baixar Relatório PDF
+                        </a>
+                    </div>
+                </section>
+
             </main>
         </div>
     </div>
 
-    <!-- Scripts JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Container de Toast Notifications (Substitui os alerts nativos) -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1080;">
+        <div id="liveToast" class="toast text-bg-dark border-secondary shadow" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header bg-dark text-light border-secondary">
+                <i class="fa-solid fa-shield-halved me-2" style="color: var(--aws-accent);"></i>
+                <strong class="me-auto">AWS Security Analyzer</strong>
+                <small>Agora</small>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body" id="toast-message-body">
+                Mensagem do sistema.
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- JavaScript para Controle SPA, Temas, Gráfico Chart.js, Toasts e Terminal -->
     <script>
-        function loadSection(section) {
-            console.log("Carregando módulo:", section);
-            // Lógica do frontend SPA
+        // Inicialização do Gráfico Chart.js
+        let securityChartInstance = null;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const ctx = document.getElementById('securityChart').getContext('2d');
+            securityChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Critical', 'High', 'Medium', 'Low'],
+                    datasets: [{
+                        data: [1, 2, 5, 12],
+                        backgroundColor: ['#dc3545', '#fd7e14', '#ffc107', '#198754'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#f8f9fa',
+                                boxWidth: 12,
+                                font: { family: 'Inter', size: 11 }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+
+        // Função moderna de Toast (substitui alert)
+        function showToast(message) {
+            const toastBody = document.getElementById('toast-message-body');
+            toastBody.innerText = message;
+            const toastEl = document.getElementById('liveToast');
+            const toast = new bootstrap.Toast(toastEl, { delay: 4000 });
+            toast.show();
         }
-        function runScan() {
-            alert("Varredura de segurança iniciada...");
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.spa-section').forEach(sec => sec.classList.remove('active'));
+            document.querySelectorAll('.sidebar .nav-link').forEach(link => link.classList.remove('active'));
+            
+            document.getElementById(`section-${tabId}`).classList.add('active');
+            document.getElementById(`nav-${tabId}`).classList.add('active');
         }
-        function downloadReport() {
-            window.location.href = "/app/report/download";
+
+        // Função para alternar temas / cores de destaque dinamicamente
+        function setTheme(themeName) {
+            const root = document.documentElement;
+            if (themeName === 'aws') {
+                root.style.setProperty('--aws-accent', '#ff9900');
+            } else if (themeName === 'cyber') {
+                root.style.setProperty('--aws-accent', '#00ff66');
+            } else if (themeName === 'ocean') {
+                root.style.setProperty('--aws-accent', '#00d2ff');
+            } else if (themeName === 'ruby') {
+                root.style.setProperty('--aws-accent', '#f43f5e');
+            }
+            showToast(`Tema alterado com sucesso!`);
         }
+
+        // Simulador de Terminal Interativo para a seção Labs
+        function runTerminalCommand(type) {
+            const term = document.getElementById('terminal-output');
+            let logs = [];
+
+            if (type === 'iam') {
+                logs = [
+                    "[$] Initializing AWS IAM policy analyzer...",
+                    "[i] Scanning active users, roles and groups in us-east-1...",
+                    "[!] Warning: Root account lacks hardware MFA token enforcement.",
+                    "[✓] IAM Audit completed. 2 findings registered."
+                ];
+            } else if (type === 's3') {
+                logs = [
+                    "[$] Checking S3 bucket public access block settings...",
+                    "[i] Inspecting 5 buckets for ACL misconfigurations...",
+                    "[✓] All buckets have BlockPublicAccess enabled successfully."
+                ];
+            } else if (type === 'sg') {
+                logs = [
+                    "[$] Fetching Security Groups rules...",
+                    "[!] CRITICAL: Found rule allowing 0.0.0.0/0 on port 22 (SSH).",
+                    "[!] HIGH: Found unsecured database port 3306 exposed.",
+                    "[!] SG Audit completed with 2 high-risk rules."
+                ];
+            }
+
+            term.innerHTML += `<br><span class="terminal-prompt">aws-analyzer@sec-ops:~$</span> run-audit --module=${type}<br>`;
+            
+            let i = 0;
+            function printLog() {
+                if (i < logs.length) {
+                    term.innerHTML += `${logs[i]}<br>`;
+                    term.scrollTop = term.scrollHeight;
+                    i++;
+                    setTimeout(printLog, 300);
+                }
+            }
+            printLog();
+        }
+
+        function clearTerminal() {
+            document.getElementById('terminal-output').innerHTML = '<span class="terminal-prompt">aws-analyzer@sec-ops:~$</span> Terminal limpo.<br>';
+        }
+
+        async function runScan() {
+            try {
+                const res = await fetch('/api/dashboard');
+                const data = await res.json();
+                document.getElementById('metric-score').innerText = data.security_score + '%';
+                document.getElementById('metric-critical').innerText = data.metrics.critical;
+                document.getElementById('metric-resources').innerText = data.metrics.resources_monitored;
+                document.getElementById('lbl-last-scan').innerText = data.metrics.last_scan;
+                showToast('Varredura na infraestrutura AWS executada com sucesso!');
+            } catch (err) {
+                console.error("Erro ao executar scan:", err);
+                showToast('Varredura simulada com sucesso (Modo offline ativado).');
+            }
+        }
+
+        window.onload = async function() {
+            try {
+                const res = await fetch('/api/dashboard');
+                const data = await res.json();
+                document.getElementById('metric-score').innerText = data.security_score + '%';
+                document.getElementById('metric-critical').innerText = data.metrics.critical;
+                document.getElementById('metric-resources').innerText = data.metrics.resources_monitored;
+                document.getElementById('lbl-last-scan').innerText = data.metrics.last_scan;
+                document.getElementById('lbl-region').innerText = data.region;
+            } catch (e) {
+                console.log("Modo offline ou aguardando inicialização do backend.");
+            }
+        };
     </script>
 </body>
 </html>
