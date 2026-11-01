@@ -1,118 +1,161 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CyberCheck - Central de Segurança Digital</title>
-  
-  <!-- Fogli di Stile dalla cartella styles/ -->
-  <link rel="stylesheet" href="styles/normalize.css">
-  <link rel="stylesheet" href="styles/style.css">
-  <link rel="stylesheet" href="styles/dark.css">
-  <link rel="stylesheet" href="styles/responsive.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberCheck - Segurança e Inteligência Digital</title>
+    
+    <!-- Ícones FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Seu CSS -->
+    <link rel="stylesheet" href="styles/style.css">
 </head>
 <body>
 
-  <!-- Menu Superiore -->
-  <header>
-    <div class="logo-container">
-      <div class="logo-icon">🛡️</div>
-      <div>
-        <strong>CyberCheck</strong> <span class="badge-pro">PRO</span>
-        <div style="font-size: 0.75rem; color: var(--text-secondary);">Proteja sua vida digital</div>
-      </div>
-    </div>
-    <nav>
-      <ul>
-        <li><a href="#" class="active">Início</a></li>
-        <li><a href="#urls">URLs</a></li>
-        <li><a href="#senhas">Senhas</a></li>
-        <li><a href="#golpes">Golpes</a></li>
-        <li><a href="#vazamentos">Vazamentos</a></li>
-        <li><a href="#checklist">Checklist</a></li>
-        <li><a href="#treinamento">Treinamento</a></li>
-        <li><a href="#sos" class="sos-link">SOS</a></li>
-        <li><a href="#blog">Blog</a></li>
-      </ul>
-    </nav>
-  </header>
+    <!-- HEADER / TOPBAR -->
+    <header>
+        <div class="logo">
+            <i class="fa-solid fa-shield-halved"></i>
+            <div>
+                <h2>CyberCheck</h2>
+                <small>Segurança Digital</small>
+            </div>
+        </div>
+        <nav>
+            <a href="index.html" class="active">Início</a>
+            <a href="#ferramentas">Ferramentas</a>
+            <a href="paginas/cyber-shield-brasil/pages/blog.html">Blog</a>
+        </nav>
+        <div class="topbar-actions">
+            <a href="paginas/cyber-shield-brasil/pages/emergency.html" class="btn-login">
+                <i class="fa-solid fa-user"></i>
+                Entrar
+            </a>
+        </div>
+    </header>
 
-  <!-- Container Principale -->
-  <main class="container">
-
-    <!-- Hero Section -->
-    <section class="hero-card">
-      <span class="hero-tag">🛡️ Central Integrada de Proteção Digital</span>
-      <h1 class="hero-title">Proteja sua vida digital.<br>Verifique links, senhas e evite golpes.</h1>
-      <p class="hero-description">
-        Ferramentas gratuitas, interativas e fáceis de usar para analisar ameaças em tempo real e fortalecer sua segurança na internet.
-      </p>
-      <div class="hero-buttons">
-        <a href="#urls" class="btn btn-primary">🔍 Testar Link Suspeito</a>
-        <a href="#treinamento" class="btn btn-secondary">🎓 Treinar Identificação de Golpes</a>
-      </div>
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <div class="hero-left">
+            <span class="subtitle">INTELIGÊNCIA EM CIBERSEGURANÇA</span>
+            <h1>Proteja seu ambiente com <span class="blue">inteligência</span> avançada.</h1>
+            <p>Monitore ameaças, analise domínios e valide a segurança de seus sistemas em tempo real com ferramentas profissionais.</p>
+            <div class="buttons">
+                <a href="#ferramentas" class="btn-primary">Explorar Ferramentas</a>
+                <a href="paginas/cyber-shield-brasil/pages/emergency.html" class="btn-secondary">Suporte SOS</a>
+            </div>
+        </div>
+        <div class="hero-right">
+            <img src="imagem/datacenter.jpg" alt="Datacenter e Cibersegurança">
+        </div>
     </section>
 
-    <!-- Griglia Strumenti Interattivi -->
-    <section class="tools-grid">
-
-      <!-- 1. URL Validator -->
-      <div class="tool-card" id="urls">
-        <div class="tool-icon">🔗</div>
-        <h3 class="tool-title">1. Validador de URLs</h3>
-        <p class="tool-desc">Cole um link para checar se ele possui HTTPS e estrutura segura.</p>
-        <div class="input-group">
-          <input type="text" id="url-input" class="input-field" placeholder="https://exemplo.com">
+    <!-- CARDS DE FERRAMENTAS (8 Cards em Grade) -->
+    <section class="cards" id="ferramentas">
+        <!-- Card 1 -->
+        <div class="card">
+            <div class="card-icon-box">
+                <i class="fa-solid fa-link"></i>
+            </div>
+            <h3>Validador de URLs</h3>
+            <p>Verifique domínios, SSL/HTTPS e padrões de links maliciosos.</p>
+            <a href="paginas/cyber-shield-brasil/pages/url-validator.html" class="card-link">Acessar →</a>
         </div>
-        <button class="btn btn-primary" style="width:100%" onclick="analisaURL()">Verificar Link</button>
-        <div id="url-result" class="result-box"></div>
-      </div>
 
-      <!-- 2. Password Strength -->
-      <div class="tool-card" id="senhas">
-        <div class="tool-icon">🔐</div>
-        <h3 class="tool-title">2. Verificador de Senhas</h3>
-        <p class="tool-desc">Teste a complexidade da sua senha sem salvá-la.</p>
-        <div class="input-group">
-          <input type="password" id="pass-input" class="input-field" placeholder="Digite uma senha">
+        <!-- Card 2 -->
+        <div class="card">
+            <div class="card-icon-box">
+                <i class="fa-solid fa-key"></i>
+            </div>
+            <h3>Verificador de Senhas</h3>
+            <p>Teste a robustez e o nível de segurança das suas senhas contra vazamentos.</p>
+            <a href="paginas/cyber-shield-brasil/pages/password-checker.html" class="card-link">Acessar →</a>
         </div>
-        <button class="btn btn-primary" style="width:100%" onclick="analisaSenha()">Analisar Senha</button>
-        <div id="pass-result" class="result-box"></div>
-      </div>
 
-      <!-- 3. Phishing Detector -->
-      <div class="tool-card" id="golpes">
-        <div class="tool-icon">📧</div>
-        <h3 class="tool-title">3. Detector de Golpes</h3>
-        <p class="tool-desc">Cole a mensagem recebida por e-mail ou SMS.</p>
-        <div class="input-group">
-          <textarea id="golpe-input" class="input-field" placeholder="Ex: Seu PIX foi bloqueado..."></textarea>
+        <!-- Card 3 -->
+        <div class="card">
+            <div class="card-icon-box">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <h3>Detector de Golpes</h3>
+            <p>Analise e identifique tentativas de fraudes e engenharia social.</p>
+            <a href="paginas/cyber-shield-brasil/pages/phishing-detector.html" class="card-link">Acessar →</a>
         </div>
-        <button class="btn btn-primary" style="width:100%" onclick="analisaGolpe()">Analisar Texto</button>
-        <div id="golpe-result" class="result-box"></div>
-      </div>
 
-      <!-- 5. Checklist -->
-      <div class="tool-card" id="checklist">
-        <div class="tool-icon">🛡️</div>
-        <h3 class="tool-title">5. Checklist de Segurança</h3>
-        <p class="tool-desc">Marque o que você já adotou em sua rotina:</p>
-        <div style="text-align: left;">
-          <label class="checklist-item"><input type="checkbox" class="check-item" onclick="atualizaChecklist()"> Uso senha forte</label>
-          <label class="checklist-item"><input type="checkbox" class="check-item" onclick="atualizaChecklist()"> Ativei MFA / 2FA</label>
-          <label class="checklist-item"><input type="checkbox" class="check-item" onclick="atualizaChecklist()"> Faço backup periódico</label>
-          <label class="checklist-item"><input type="checkbox" class="check-item" onclick="atualizaChecklist()"> Computador atualizado</label>
+        <!-- Card 4 -->
+        <div class="card">
+            <div class="card-icon-box">
+                <i class="fa-solid fa-user-shield"></i>
+            </div>
+            <h3>Consulta de Vazamentos</h3>
+            <p>Verifique se suas credenciais foram expostas em vazamentos de dados.</p>
+            <a href="paginas/cyber-shield-brasil/pages/breach-checker.html" class="card-link">Acessar →</a>
         </div>
-        <div id="checklist-score" style="margin-top: 1rem; font-weight: bold;">Sua segurança: 0%</div>
-        <div class="progress-bar">
-          <div id="checklist-progress" class="progress-fill"></div>
-        </div>
-      </div>
 
+        <!-- Card 5 -->
+        <div class="card">
+            <div class="card-icon-box">
+                <i class="fa-solid fa-list-check"></i>
+            </div>
+            <h3>Checklist de Segurança</h3>
+            <p>Guia prático para hardening e boas práticas de segurança digital.</p>
+            <a href="paginas/cyber-shield-brasil/pages/checklist.html" class="card-link">Acessar →</a>
+        </div>
+
+        <!-- Card 6 -->
+        <div class="card">
+            <div class="card-icon-box">
+                <i class="fa-solid fa-graduation-cap"></i>
+            </div>
+            <h3>Treinamento Interativo</h3>
+            <p>Cursos e materiais educativos em conscientização cibernética.</p>
+            <a href="paginas/cyber-shield-brasil/pages/training.html" class="card-link">Acessar →</a>
+        </div>
+
+        <!-- Card 7 -->
+        <div class="card">
+            <div class="card-icon-box">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <h3>Fui Hackeado, e Agora?</h3>
+            <p>Procedimentos imediatos de emergência e contenção de danos.</p>
+            <a href="paginas/cyber-shield-brasil/pages/emergency.html" class="card-link">Acessar →</a>
+        </div>
+
+        <!-- Card 8 -->
+        <div class="card">
+            <div class="card-icon-box">
+                <i class="fa-solid fa-blog"></i>
+            </div>
+            <h3>Blog Educativo</h3>
+            <p>Artigos, notícias e alertas de segurança recentes.</p>
+            <a href="paginas/cyber-shield-brasil/pages/blog.html" class="card-link">Acessar →</a>
+        </div>
     </section>
-  </main>
 
-  <!-- Script JS -->
-  <script src="script/app.js"></script>
+    <!-- ESTATÍSTICAS -->
+    <section class="stats">
+        <div>
+            <strong>99.9%</strong>
+            <span>Uptime Garantido</span>
+        </div>
+        <div>
+            <strong>+50M</strong>
+            <span>Links Analisados</span>
+        </div>
+        <div>
+            <strong>24/7</strong>
+            <span>Monitoramento Ativo</span>
+        </div>
+        <div>
+            <strong>Zero</strong>
+            <span>Falsos Positivos</span>
+        </div>
+    </section>
+
 </body>
 </html>
